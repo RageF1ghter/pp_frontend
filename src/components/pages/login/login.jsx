@@ -12,14 +12,16 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        const emailInput = email || 'czybaba@gmail.com';
+        const passwordInput = password || 'password';
+        console.log(emailInput, passwordInput);
         try{
             const response = await fetch('http://localhost:5000/auth/login', {
                 method:'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({email, password})
+                body: JSON.stringify({email: emailInput, password: passwordInput})
             })
             if(!response.ok){
                 throw new Error('Login failed')
@@ -44,10 +46,10 @@ const Login = () => {
     return (
 
         <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username: </label>
+            <label htmlFor="email">Email: </label>
             <input 
                 type="text" 
-                id="username" 
+                id="email" 
                 value ={email} 
                 onChange={(e) => setEmail(e.target.value)}
             />

@@ -1,5 +1,6 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { useSelector } from 'react-redux'
 import Navbar from './components/public/navbar'
 import Home from './components/pages/home/home'
 import Spend from './components/pages/spend/spend'
@@ -12,21 +13,35 @@ import Notes from './components/pages/notes/notes'
 import Playground from './components/pages/playground/playground'
 
 function App() {
+  const isLoggedIn = useSelector((state) => state.auth.status);
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Login />}/>
-        <Route path="/home" element={<Home />}/>
-        <Route path="/spend" element={<Spend />}/>
-        <Route path="/workout" element={<Workout />}/>
-        <Route path="/heatmap" element={<Heatmap />}></Route>
-        {/* <Route path="/sensor" element={<Sensor />}></Route> */}
-        {/* <Route path="/notes" element={<Notes />}></Route> */}
-        {/* <Route path="/message" element={<Message />}></Route> */}
-        <Route path="/playground" element={<Playground />}></Route>
-      </Routes>
-      
+      {isLoggedIn ? (
+        <>
+          <Navbar />
+          <Routes>
+            <Route path="/home" element={<Home />} />
+            <Route path="/spend" element={<Spend />} />
+            <Route path="/workout" element={<Workout />} />
+            <Route path="/heatmap" element={<Heatmap />}></Route>
+            {/* <Route path="/sensor" element={<Sensor />}></Route> */}
+            {/* <Route path="/notes" element={<Notes />}></Route> */}
+            {/* <Route path="/message" element={<Message />}></Route> */}
+            <Route path="/playground" element={<Playground />}></Route>
+          </Routes>
+        </>
+      ) : (
+        <>
+          <Routes>
+            <Route path='/login' element={<Login />}></Route>
+            <Route path='*' element={<Login />}></Route>
+          </Routes>
+        </>
+
+      )
+      }
+
+
     </Router>
   )
 }

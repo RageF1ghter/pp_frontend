@@ -1,7 +1,10 @@
 /* Base Navbar Styling */
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
     transition: background 0.3s, color 0.3s;
@@ -19,11 +22,18 @@
     color: #ffffff;
 }
 
+ul {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+}
+
 /* Links */
 .nav-link {
     text-decoration: none;
     color: inherit;
     padding: 10px;
+    margin: 10px;
 }
 
 .nav-link:hover {
@@ -38,6 +48,8 @@
     padding: 8px 16px;
     border-radius: 5px;
     cursor: pointer;
+    margin-left: auto;
+    margin-right: 5%;
 }
 
 .theme-toggle:hover {
