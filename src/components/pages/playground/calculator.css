@@ -1,0 +1,32 @@
+.cantainer{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: antiquewhite;
+}
+
+
+.inputs{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.operators {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+}
+
+.clean {
+    color: red;
+}

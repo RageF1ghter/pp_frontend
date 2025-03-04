@@ -1,0 +1,45 @@
+/* Base Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Light Theme */
+.navbar.light {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Dark Theme */
+.navbar.dark {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+/* Links */
+.nav-link {
+    text-decoration: none;
+    color: inherit;
+    padding: 10px;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    border: none;
+    background: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    background: #0056b3;
+}
