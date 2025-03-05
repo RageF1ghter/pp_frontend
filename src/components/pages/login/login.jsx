@@ -37,7 +37,7 @@ const Login = () => {
                 status: true
             }));
             localStorage.setItem('jwt', data.jwt_token);
-            navigate('/home');
+            navigate(`/home/${data.user.username}`);
         } catch(error){
             console.error('Error:', error);
         }

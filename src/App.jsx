@@ -14,20 +14,21 @@ import Playground from './components/pages/playground/playground'
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.status);
+  // const username = useSelector((state) => state.auth.username);
   return (
     <Router>
       {isLoggedIn ? (
         <>
           <Navbar />
           <Routes>
-            <Route path="/home" element={<Home />} />
+            <Route path="/home/:username" element={<Home />} />
             <Route path="/spend" element={<Spend />} />
             <Route path="/workout" element={<Workout />} />
             <Route path="/heatmap" element={<Heatmap />}></Route>
             {/* <Route path="/sensor" element={<Sensor />}></Route> */}
             {/* <Route path="/notes" element={<Notes />}></Route> */}
             {/* <Route path="/message" element={<Message />}></Route> */}
-            <Route path="/playground" element={<Playground />}></Route>
+            <Route path="/playground/*" element={<Playground />}></Route>
           </Routes>
         </>
       ) : (

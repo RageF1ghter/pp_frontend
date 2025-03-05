@@ -1,0 +1,28 @@
+.functions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive columns */
+    gap: 20px; /* Space between cards */
+    padding: 20px;
+    justify-items: center; /* Center items inside the grid cells */
+}
+
+.function-card {
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    width: 150px; /* Fixed width for each card */
+    transition: transform 0.2s ease-in-out;
+}
+
+.function-card:hover {
+    transform: scale(1.05);
+}
+
+.function-card a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #007bff;
+    display: block;
+}

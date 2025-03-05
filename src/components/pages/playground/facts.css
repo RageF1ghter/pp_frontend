@@ -1,0 +1,12 @@
+.facts-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 15px;
+}
+
+.fact-item {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}

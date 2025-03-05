@@ -1,81 +1,31 @@
-// import "./home.css";
-// import React, { useState, useEffect } from "react";
-// import useFetch from "./useFetch";
-// import { useSelector } from "react-redux";
-
-// const Home = () => {
-//   const username = useSelector((state) => state.auth.username);
-//   console.log(username);
-  
-//   const {data, loading, error} = useFetch("https://jsonplaceholder.typicode.com/users");
-
-//   if (loading) return <p>Loading...</p>;
-//   if (error) return <p>Error: {error.message}</p>;
-
-//   return (
-//     <>
-//       <p>username: {username}</p>
-//       <ul>
-//         {data.map((user) => (
-//           <li key={user.id}>{user.name}</li>
-//         ))}
-//       </ul>
-//     </>
-    
-//   );
-// }
-
-// export default Home;
 
 import React, { useState, useEffect } from "react";
-import Form from "./form";
+import { useParams } from "react-router-dom";
 
 function Home() {
-  const [users, setUsers] = useState([]);
-  const dataFetch = async () => {
-    try{
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
-      const data = await response.json();
-      if(response.ok){
-        console.log(data);
-        setUsers(data);
-      }else{
-        throw new Error("Failed to fetch data");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+  const {username} = useParams();
+  const [time, setTime] = useState('morning');
+
+  const getHour = () => {
+    const date = new Date();
+    const hour = date.getHours();
+    if(hour >= 5 && hour < 12) {
+      setTime('morning');
+    } else if(hour >= 12 && hour < 18) {
+      setTime('afternoon');
+    } else {
+      setTime('evening');
     }
   }
 
   useEffect(() => {
-    dataFetch();
-  },[])
+    getHour();
 
-  const handleSubmit = (newUser) => {
-    setUsers([...users, newUser]);
-  }
-
+  },[]);
   return (
     <>
-      <table>
-        <thead>
-          <tr>
-            <td>Name</td>
-            <td>Email</td>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => {
-            return(
-              <tr key={user.id}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-      <Form handleSubmit = {handleSubmit}/>
+      <h1>This is the homepage</h1>
+      <h2>Good {time}, {username}</h2>
     </>
   )
 }
