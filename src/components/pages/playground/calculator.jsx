@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import './calculator.css';
 
+
 export default function Calculator() {
     const [input, setInput] = useState('');
     const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '='];

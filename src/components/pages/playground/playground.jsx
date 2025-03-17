@@ -2,6 +2,7 @@ import Calculator from "./calculator";
 import Facts from "./facts";
 import Images from "./images";
 import Validator from "./validator";
+import Counter from "./counter";
 import { Link, Route, Routes } from 'react-router-dom';
 import "./playground.css"
 
@@ -12,7 +13,8 @@ function Playground() {
         { name: 'Calculator', path: 'calculator' }, 
         { name: 'Facts', path: 'facts' }, 
         { name: 'Images', path: 'images' },
-        { name: 'Validator', path: 'validator' }
+        { name: 'Validator', path: 'validator' },
+        { name: 'Counter', path: 'counter' }
     ];
 
     return (
@@ -23,6 +25,7 @@ function Playground() {
                 <Route path="facts" element={<Facts />} />
                 <Route path="images" element={<Images />} />
                 <Route path="validator" element={<Validator/>} />
+                <Route path="counter" element={<Counter />} />
             </Routes>
             <div className="functions">
                 {functions.map((func, index) => (

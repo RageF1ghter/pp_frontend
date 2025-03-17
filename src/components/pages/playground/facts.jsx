@@ -4,13 +4,13 @@ import './facts.css';
 export default function Facts() {
     const [facts, setFacts] = useState([]);
     const [display, setDisplay] = useState([]);
-    const [text, setText] = useState([]);
     const [page, setPage] = useState(1);
     const handleFetch = async () => {
         try {
             const response = await fetch('https://uselessfacts.jsph.pl/random.json?language=en');
             const data = await response.json();
             if (data && data.text) {
+                console.log(data);
                 setFacts(prevFacts => [...prevFacts, data]);
             } else {
                 console.error("Unexpected API response:", data);
@@ -33,9 +33,11 @@ export default function Facts() {
     }
 
     useEffect(() => {
-        for (let i = 0; i < 10; i++) {
-            handleFetch();
-        }
+        const fetchData = async () => {
+            const fetchPromises = Array.from({ length: 10 }, () => handleFetch());
+            await Promise.all(fetchPromises);
+        };
+        fetchData();
     }, []);
 
     useEffect(() => {

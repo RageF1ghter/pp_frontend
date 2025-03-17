@@ -61,7 +61,7 @@ const Heatmap = () => {
     const width = (originalWidth * factor) / 100;
     const height = (originalHeight * factor) / 100;
 
-    const densityData = useMemo(() => {
+    const densityData =   (() => {
         if (scaledData.length === 0) return [];
 
         console.log('calculate density data');
@@ -133,7 +133,7 @@ const Heatmap = () => {
     return (
         <div>
             <h1>This is Heatmap</h1>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div>
                 <label>Size: {factor}%</label>
                 <input
                     type="range"
@@ -142,7 +142,7 @@ const Heatmap = () => {
                     onChange={(e) => setFactor(Number(e.target.value))}
                 />
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div>
                 <label>Opacity: {opacity}%</label>
                 <input
                     type="range"
@@ -151,10 +151,8 @@ const Heatmap = () => {
                     onChange={(e) => setOpacity(Number(e.target.value))}
                 />
             </div>
-            <svg ref={svgRef} width={svgWidth} height={svgHeight} style={{ border: "2px solid black" }} />
+            <svg ref={svgRef} width={svgWidth} height={svgHeight} />
         </div>
-
-
     )
 }
 

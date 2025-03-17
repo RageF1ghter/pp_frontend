@@ -7,6 +7,13 @@ export default function Validator() {
         email: yup.string().email().required(),
         password: yup.string().min(8).required(),
         url: yup.string().url().required(),
+    });
+
+    const passwordSchema = yup.object().shape({
+        password: yup.string()
+            .min(9, 'Password is too short - should be 9 chars minimum.')
+            .matches(/[a-z]/, "Password must contain at least one lowercase character")
+            .matches(/[A-Z]/, "Password must contain at least one uppercase character")
     })
 
     async function validateCommon(data) {
