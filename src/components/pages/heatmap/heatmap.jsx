@@ -1,128 +1,113 @@
 import * as d3 from "d3";
 import { useState, useEffect, useRef, useMemo } from "react";
-
+import groupDataIntoGrid from "./grid";
 
 const Heatmap = () => {
+    const svgRef = useRef();
     const imgPath = "/floorplan.jpg";
     const dataPath = "/Ldata.csv";
 
-    // Original dimensions
     const originalWidth = 1742;
     const originalHeight = 1472;
 
-    // State variables
-    const [factor, setFactor] = useState(50); // 50% default scale
-    const [opacity, setOpacity] = useState(0.1); // 10% default opacity
+    const [factor, setFactor] = useState(50);
+    const [opacity, setOpacity] = useState(0.5);
     const [data, setData] = useState([]);
-    const [windowSize, setWindowSize] = useState({
-        width: window.innerWidth,
-        height: window.innerHeight,
-    });
+    const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+    const [grid, setGrid] = useState(true);  // Default style: grid
+    const [contour, setContour] = useState(false);
 
-    // Handle Window Resize
+    const offsetRef = useRef({ x: 0, y: 0 });
+    const gridSize = 15; // Smaller for smoother heatmap
+
     useEffect(() => {
-        const handleResize = () => {
-            setWindowSize({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            });
-        };
-        console.log(windowSize);
+        const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const svgWidth = Math.min(originalWidth, windowSize.width * 0.9);  // 90% of window width
-    const svgHeight = (svgWidth / originalWidth) * originalHeight; // Maintain aspect ratio
+    const svgWidth = Math.min(originalWidth, windowSize.width * 0.9);
+    const svgHeight = (svgWidth / originalWidth) * originalHeight;
 
-    const svgRef = useRef();
-    const offsetRef = useRef({ x: 0, y: 0 });
-    
-    // load data
-    useEffect(() => {
-        d3.csv(dataPath).then(rawData => {
-            const parsedData = rawData.map(d => {
-                return {
-                    x: +d.Predicted_x,
-                    y: +d.Predicted_y
-                }
-            })
-            setData(parsedData);
-        })
-    }, []);
-
-    // Refactor position data
-    const scaledData = useMemo(() => {
-        console.log("refactor data");
-        return data.map(d => [d.x * factor / 100, d.y * factor / 100]);
-    }, [data, factor]);
-
-    // Dynamically calculate width & height based on factor
     const width = (originalWidth * factor) / 100;
     const height = (originalHeight * factor) / 100;
 
-    const densityData =   (() => {
-        if (scaledData.length === 0) return [];
+    useEffect(() => {
+        d3.csv(dataPath).then(rawData => {
+            setData(rawData.map(d => ({ x: +d.Predicted_x, y: +d.Predicted_y })));
+        });
+    }, []);
 
-        console.log('calculate density data');
+    const scaledData = useMemo(() => data.map(d => ({
+        x: (d.x * factor) / 100,
+        y: (d.y * factor) / 100
+    })), [data, factor]);
+
+    const groupedData = useMemo(() => groupDataIntoGrid(data, gridSize, originalWidth, originalHeight), [data, gridSize]);
+
+    const densityData = useMemo(() => {
+        if (scaledData.length === 0) return [];
         return d3.contourDensity()
-            .x(d => d[0])
-            .y(d => d[1])
+            .x(d => d.x)
+            .y(d => d.y)
             .size([width, height])
-            .bandwidth(30) // 🔥 Adjust blur/spread of heat
-            .thresholds(20) // 🔥 Number of heatmap levels
+            .bandwidth(30)
+            .thresholds(20)
             (scaledData);
-    }, [scaledData, width, height])
+    }, [scaledData, width, height]);
 
     useEffect(() => {
-        if (!densityData.length) return;
-    
         const svg = d3.select(svgRef.current);
-        svg.selectAll("*").remove(); // Clear previous elements
-    
-        // Append a group (<g>) that will be draggable.
-        const g = svg.append("g");
-    
-        // Append the floor plan image inside the group
+        svg.selectAll("*").remove();
+
+        const g = svg.append("g")
+            .attr("transform", `translate(${offsetRef.current.x}, ${offsetRef.current.y})`);
+
         g.append("image")
-          .attr("href", imgPath)
-          .attr("width", width)
-          .attr("height", height);
-    
-        const colorScale = d3
-          .scaleSequential(d3.interpolateYlOrRd) // Yellow → Red gradient
-          .domain([0, d3.max(densityData, (d) => d.value)]);
-    
-        // Draw heatmap paths within the group
-        g.selectAll("path")
-          .data(densityData)
-          .enter()
-          .append("path")
-          .attr("d", d3.geoPath())
-          .attr("fill", (d) => colorScale(d.value))
-          .attr("stroke", "none")
-          .attr("class", "heatmap-path")
-          .style("opacity", opacity);
-    
-        // Define drag behavior for the group
-        const dragBehavior = d3
-          .drag()
-          .on("drag", (event) => {
-            // Update offset using event.dx and event.dy
+            .attr("href", imgPath)
+            .attr("width", width)
+            .attr("height", height);
+
+        if (grid) {
+            const maxWeight = d3.max(groupedData, d => d.weight);
+            const colorScale = d3.scaleSequential(d3.interpolateYlOrRd).domain([0, maxWeight]);
+
+            g.selectAll(".heat-cell")
+                .data(groupedData)
+                .enter()
+                .append("rect")
+                .attr("x", d => (d.x * factor) / 100)
+                .attr("y", d => (d.y * factor) / 100)
+                .attr("width", (gridSize * factor) / 100)
+                .attr("height", (gridSize * factor) / 100)
+                .attr("fill", d => colorScale(d.weight))
+                .attr("opacity", opacity)
+                .attr("class", "heatmap-path");
+        }
+
+        if (contour) {
+            const colorScale = d3.scaleSequential(d3.interpolateYlOrRd)
+                .domain([0, d3.max(densityData, d => d.value)]);
+
+            g.selectAll(".heatmap-path")
+                .data(densityData)
+                .enter()
+                .append("path")
+                .attr("d", d3.geoPath())
+                .attr("fill", d => colorScale(d.value))
+                .attr("opacity", opacity)
+                .attr("class", "heatmap-path");
+        }
+
+        const dragBehavior = d3.drag().on("drag", event => {
             offsetRef.current.x += event.dx;
             offsetRef.current.y += event.dy;
-            // Apply translation to the group element
-            g.attr(
-              "transform",
-              `translate(${offsetRef.current.x}, ${offsetRef.current.y})`
-            );
-          });
-    
-        // Attach drag behavior to the group
-        g.call(dragBehavior);
-      }, [densityData, width, height]);
+            g.attr("transform", `translate(${offsetRef.current.x}, ${offsetRef.current.y})`);
+        });
 
-    // Update opacity based on slider input
+        g.call(dragBehavior);
+    }, [densityData, groupedData, width, height, opacity, grid, factor]);
+
     useEffect(() => {
         d3.selectAll(".heatmap-path")
             .transition()
@@ -131,29 +116,35 @@ const Heatmap = () => {
     }, [opacity]);
 
     return (
-        <div>
-            <h1>This is Heatmap</h1>
-            <div>
-                <label>Size: {factor}%</label>
-                <input
-                    type="range"
-                    min="10" max="200" step="10"
-                    value={factor}
-                    onChange={(e) => setFactor(Number(e.target.value))}
+        <>
+            <h1>Heatmap Visualization</h1>
+            <div className="space-x-4">
+                <button
+                    onClick={() => { setGrid(true); setContour(false); }}
+                    className={`px-4 py-2 rounded ${grid ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                >
+                    Grid
+                </button>
+                <button onClick={() => { setContour(true); setGrid(false); }}
+                    className={`px-4 py-2 rounded ${contour ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                >
+                    Contour
+                </button>
+
+                <div className="mx-4">
+                    Size: {factor}%
+                    <input type="range" min="10" max="200" step="10" value={factor}
+                        onChange={e => setFactor(+e.target.value)}
+                    />
+                </div>
+                <label>Opacity: {(opacity * 100).toFixed(0)}%</label>
+                <input type="range" min="0.1" max="1" step="0.1" value={opacity}
+                    onChange={e => setOpacity(+e.target.value)}
                 />
             </div>
-            <div>
-                <label>Opacity: {opacity}%</label>
-                <input
-                    type="range"
-                    min="0.1" max="1" step="0.1"
-                    value={opacity}
-                    onChange={(e) => setOpacity(Number(e.target.value))}
-                />
-            </div>
-            <svg ref={svgRef} width={svgWidth} height={svgHeight} />
-        </div>
-    )
-}
+            <svg ref={svgRef} width={svgWidth} height={svgHeight}></svg>
+        </>
+    );
+};
 
 export default Heatmap;
