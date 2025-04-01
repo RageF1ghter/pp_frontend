@@ -18,13 +18,16 @@ function FullCalendarComponent() {
         date: null,
         note: ''
     });
+    const [startDate, setStartDate] = useState(new Date());
 
 
 
     const fetchRecords = async () => {
         try {
-            const today = new Date();
-            const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            
+            const dateString = startDate.toISOString().split('T')[0].split('-'); // Format the date as YYYY-MM-DD
+            const date = dateString[0] + '-' + dateString[1] + '-' + '01'; // YYYY-MM-DD format
+            console.log(date)
             const res = await fetch(`http://localhost:5000/workout/?userId=${userId}&date=${date}`);
             const data = await res.json();
             setRecords(data);
@@ -37,7 +40,7 @@ function FullCalendarComponent() {
 
     useEffect(() => {
         fetchRecords();
-    }, [userId]);
+    }, [userId, startDate]);
     // useEffect(() => {
     //     console.log(records);
     // }, []);
@@ -55,7 +58,7 @@ function FullCalendarComponent() {
 
     const handleAdd = async () => {
         console.log(newRecord)
-        try{
+        try {
             const res = await fetch(`http://localhost:5000/workout/add`, {
                 method: 'POST',
                 headers: {
@@ -77,39 +80,52 @@ function FullCalendarComponent() {
 
     return (
         <div>
-            <div>
-                <FullCalendar
-                    plugins={[dayGridPlugin, interactionPlugin]}
-                    initialView="dayGridMonth"
-                    events={
-                        records.map(record => {
-                            return {
-                                title: record.category,
-                                date: record.date.split('T')[0],
-                                extendedProps: {
-                                    duration: record.duration
-                                },
-                            }
-                        })
-                    }
-                    eventContent={(eventInfo) => (
-                        <>
-                            <b>{eventInfo.event.title}</b>
-                            <i> ({eventInfo.event.extendedProps.duration} mins)</i>
-                        </>
-                    )}
-                    dateClick={(info) => {
-                        if (!open) {
-                            console.log('Date clicked:', info.dateStr);
-                            setOpen(true);
-                            setNewRecord({...newRecord, date: info.dateStr});
-                        } else {
-                            console.log('overlapping')
-                        }
 
-                    }}
-                />
-            </div>
+            <FullCalendar
+                plugins={[dayGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                events={
+                    records.map(record => {
+                        return {
+                            title: record.category,
+                            date: record.date.split('T')[0],
+                            extendedProps: {
+                                duration: record.duration
+                            },
+                        }
+                    })
+                }
+                eventContent={(eventInfo) => (
+                    <>
+                        <b>{eventInfo.event.title}</b>
+                        <i> ({eventInfo.event.extendedProps.duration} mins)</i>
+                    </>
+                )}
+                dateClick={(info) => {
+                    if (!open) {
+                        console.log('Date clicked:', info.dateStr);
+                        setOpen(true);
+                        
+                        const [year, month, day] = info.dateStr.split('-');
+                        const localDate = new Date(year, month - 1, day);
+                        console.log('Local date:', localDate);
+                        const record = records.find(record => record.date.split('T')[0] === info.dateStr);
+                        if(record){
+                            setNewRecord(record);
+                        }else{
+                            setNewRecord({ ...newRecord, date: localDate });
+                        }
+                        
+                    } else {
+                        console.log('overlapping')
+                    }
+                }}
+                datesSet={(dateInfo) => {
+                    setStartDate(dateInfo.view.currentStart);
+                    console.log('Start date:', dateInfo.view.currentStart);
+                }}
+            />
+
 
 
             <Modal
@@ -136,7 +152,7 @@ function FullCalendarComponent() {
                     <input
                         value={newRecord.note}
                         onChange={(e) => setNewRecord({ ...newRecord, note: e.target.value })}
-                        type="text" id="note" className="w-full mb-4 p-2 rounded bg-white" 
+                        type="text" id="note" className="w-full mb-4 p-2 rounded bg-white"
                     />
                     <div className="flex gap-x-2">
                         <button
