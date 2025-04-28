@@ -28,6 +28,7 @@ const Navbar = () => {
                         <li><Link className="nav-link" to="/heatmap">Heatmap</Link></li>
                         <li><Link className="nav-link" to="/notes">Notes</Link></li>
                         <li><Link className="nav-link" to="/playground">Playground</Link></li>
+                        <li><Link className="nav-link" to="/calendar">Calendar</Link></li>
                         <li>More...</li>
                     </>
                 )}

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
+
+
 export default function Details({ records }) {
+
+    const URL = '3.89.31.205';
+
     const [spends, setSpends] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [total, setTotal] = useState(0);
@@ -21,7 +26,7 @@ export default function Details({ records }) {
 
     // search w/o clicking button
     const handleSearch = async () => {
-        const targets = spends.filter((spend) => (spend.category === searchText));
+        const targets = spends.filter((spend) => (spend.category.toLowerCase() === searchText.toLowerCase()));
         console.log(targets);
         if (targets.length > 0) {
             setSpends(targets);
@@ -74,7 +79,7 @@ export default function Details({ records }) {
             const spend = spends.find(spend => spend._id === id);
             const { isEditing, ...newSpend } = spend;
             try {
-                const res = await fetch(`http://localhost:5000/spend/update`, {
+                const res = await fetch(`http://${URL}:5000/spend/update`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -105,6 +110,31 @@ export default function Details({ records }) {
 
         }
 
+    }
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this record?")) {
+            return; // User canceled the deletion
+        }
+        try {
+            const res = await fetch(`http://${URL}:5000/spend/delete?${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'bearer': localStorage.getItem('token')
+                }
+            });
+            if (res.ok) {
+                console.log('Record deleted successfully');
+                setSpends(spends.filter(spend => spend._id !== id)); // Remove the deleted record from state
+                getTotal(); // Recalculate total after deletion
+            } else {
+                console.error('Failed to delete record');
+            }
+        } catch (error) {
+            console.error('Error deleting record:', error);
+            alert('Failed to delete record. Please try again later.');
+        }
     }
 
 
@@ -182,7 +212,9 @@ export default function Details({ records }) {
                                                 className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition m-0.5">
                                                 Cancel
                                             </button>
-                                            <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition m-0.5">
+                                            <button 
+                                                onClick={() => handleDelete(spend._id)}
+                                                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition m-0.5">
                                                 Delete
                                             </button>
                                         </div>

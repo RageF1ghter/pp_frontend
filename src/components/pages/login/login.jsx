@@ -3,7 +3,10 @@ import { login } from '../../../redux/authSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+
 const Login = () => {
+
+    const URL = '3.89.31.205';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
@@ -16,7 +19,7 @@ const Login = () => {
         const passwordInput = password || 'password';
         console.log(emailInput, passwordInput);
         try{
-            const response = await fetch('http://localhost:5000/auth/login', {
+            const response = await fetch(`http://${URL}:5000/auth/login`, {
                 method:'POST',
                 headers: {
                     'Content-Type': 'application/json'

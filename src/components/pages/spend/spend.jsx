@@ -4,7 +4,11 @@ import Details from './details';
 import '../style.css';
 
 const USER_ID = '67a28b8829f3ba8beda0e216';
+const categoryList = ['Housing', 'Food', 'Utilities', 'Transport', 'Shopping', 'Entertainment', 'Health', 'Appearance', 'Other'];
+
 const Spend = () => {
+
+    const URL = '3.89.31.205';
     const [category, setCategory] = useState('');
     const [details, setDetails] = useState('');
     const [amount, setAmount] = useState('');
@@ -19,7 +23,7 @@ const Spend = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (date === '') {
-            date = new Date().toLocaleString();
+            setDate(Date().toLocaleString());
         } else {
             console.log(date);
         }
@@ -71,7 +75,7 @@ const Spend = () => {
             startDate.toISOString();
             console.log(startDate, endDate);
 
-            const response = await fetch(`http://localhost:5000/spend?userId=${id}&startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://${URL}:5000/spend?userId=${id}&startDate=${startDate}&endDate=${endDate}`);
             const data = await response.json();
             if (data) {
                 data.sort((a, b) => (a.date < b.date) ? -1 : 1);
@@ -105,13 +109,14 @@ const Spend = () => {
                 >
                     <div className="flex flex-col items-center gap-2">
                         <label htmlFor="category" className="font-serif text-gray-700">Category:</label>
-                        <input
-                            type="text"
-                            id="category"
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                            className="border-2 border-sky-300 w-3/4 px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        />
+                        <select id='category' value={category} onChange={e => setCategory(e.target.value)}
+                            className='border-2 border-gray-300 w-3/4 px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none'>
+                            {categoryList.map((cat, index) => {
+                                return (
+                                    <option value={cat} id={index}>{cat}</option>
+                                )
+                            })}
+                        </select>
                     </div>
 
                     <div className="flex flex-col items-center gap-2">

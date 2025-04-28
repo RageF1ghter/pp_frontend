@@ -11,6 +11,7 @@ import Sensor from './components/pages/sensor/sensor'
 import Notes from './components/pages/notes/notes'
 // import Message from './components/pages/message/message'
 import Playground from './components/pages/playground/playground'
+import Calendar from './components/pages/calendar/calendar'
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.status);
@@ -18,29 +19,32 @@ function App() {
   return (
     <Router>
       {isLoggedIn ? (
-        <>
-          <Navbar />
-          <Routes>
-            <Route path="/home/:username" element={<Home />} />
-            <Route path="/spend" element={<Spend />} />
-            <Route path="/workout" element={<Workout />} />
-            <Route path="/heatmap" element={<Heatmap />}></Route>
-            {/* <Route path="/sensor" element={<Sensor />}></Route> */}
-            {/* <Route path="/notes" element={<Notes />}></Route> */}
-            {/* <Route path="/message" element={<Message />}></Route> */}
-            <Route path="/playground/*" element={<Playground />}></Route>
-          </Routes>
-        </>
+        <div className="flex flex-col min-h-screen m-10">
+          <Navbar/>
+          <div className="flex-1 px-4 py-6 bg-gray-50">
+            <Routes>
+              <Route path="/home/:username" element={<Home />} />
+              <Route path="/spend" element={<Spend />} />
+              <Route path="/workout" element={<Workout />} />
+              <Route path="/heatmap" element={<Heatmap />}></Route>
+              {/* <Route path="/sensor" element={<Sensor />}></Route> */}
+              {/* <Route path="/notes" element={<Notes />}></Route> */}
+              {/* <Route path="/message" element={<Message />}></Route> */}
+              <Route path="/playground/*" element={<Playground />}></Route>
+              <Route path="/calendar" element={<Calendar />}></Route>
+            </Routes>
+          </div>
+          
+        </div>
       ) : (
-        <>
+        <div>
           <Routes>
             <Route path='/login' element={<Login />}></Route>
             <Route path='*' element={<Login />}></Route>
           </Routes>
-        </>
+        </div>
 
-      )
-      }
+      )}
 
 
     </Router>
