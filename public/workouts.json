@@ -1,0 +1,70 @@
+[
+    {
+      "portion": "Chest",
+      "exercises": [
+        { "name": "Bench Press (Barbell)", "muscles": ["Chest", "Triceps", "Shoulders"], "equipment": "Barbell" },
+        { "name": "Incline Bench Press (Barbell)", "muscles": ["Upper Chest", "Triceps", "Shoulders"], "equipment": "Barbell" },
+        { "name": "Bench Press (Dumbbell)", "muscles": ["Chest", "Triceps", "Shoulders"], "equipment": "Dumbbell" },
+        { "name": "Incline Bench Press (Dumbbell)", "muscles": ["Upper Chest", "Triceps", "Shoulders"], "equipment": "Dumbbell" },
+        { "name": "Push-ups", "muscles": ["Chest", "Triceps", "Core"], "equipment": "Bodyweight" },
+        { "name": "Chest Flyes", "muscles": ["Chest"], "equipment": "Dumbbell" },
+        { "name": "Cable Crossovers", "muscles": ["Chest"], "equipment": "Cable Machine" }
+      ]
+    },
+    {
+      "portion": "Back",
+      "exercises": [
+        { "name": "Pull-ups", "muscles": ["Lats", "Biceps", "Upper Back"], "equipment": "Bodyweight" },
+        { "name": "Bent-over Rows", "muscles": ["Lats", "Rhomboids", "Lower Back"], "equipment": "Barbell or Dumbbell" },
+        { "name": "Lat Pulldowns", "muscles": ["Lats", "Biceps"], "equipment": "Cable Machine" },
+        { "name": "Deadlifts", "muscles": ["Lower Back", "Glutes", "Hamstrings", "Traps"], "equipment": "Barbell" },
+        { "name": "One Arm Dumbbell Row", "muscles": ["Lats", "Rhomboids", "Biceps"], "equipment": "Dumbbell" },
+        { "name": "Seated Cable Rows", "muscles": ["Middle Back", "Lats", "Biceps"], "equipment": "Cable Machine" }
+      ]
+    },
+    {
+      "portion": "Legs",
+      "exercises": [
+        { "name": "Squats", "muscles": ["Quads", "Glutes", "Hamstrings", "Core"], "equipment": "Barbell" },
+        { "name": "Lunges", "muscles": ["Quads", "Glutes", "Hamstrings"], "equipment": "Bodyweight or Dumbbell" },
+        { "name": "Leg Press", "muscles": ["Quads", "Glutes"], "equipment": "Machine" },
+        { "name": "Leg Curls", "muscles": ["Hamstrings"], "equipment": "Machine" },
+        { "name": "Leg Extensions", "muscles": ["Quads"], "equipment": "Machine" },
+        { "name": "Calf Raises", "muscles": ["Calves"], "equipment": "Bodyweight or Machine" }
+      ]
+    },
+    {
+      "portion": "Shoulders",
+      "exercises": [
+        { "name": "Overhead Press (Barbell)", "muscles": ["Shoulders", "Triceps"], "equipment": "Barbell" },
+        { "name": "Seated Dumbbell Press", "muscles": ["Shoulders", "Triceps"], "equipment": "Dumbbell" },
+        { "name": "Lateral Raises", "muscles": ["Side Delts"], "equipment": "Dumbbell" },
+        { "name": "Front Raises", "muscles": ["Front Delts"], "equipment": "Dumbbell" },
+        { "name": "Reverse Flyes", "muscles": ["Rear Delts"], "equipment": "Dumbbell" },
+        { "name": "Shrugs", "muscles": ["Traps"], "equipment": "Dumbbell or Barbell" }
+      ]
+    },
+    {
+      "portion": "Arms",
+      "exercises": [
+        { "name": "Barbell Curls", "muscles": ["Biceps"], "equipment": "Barbell" },
+        { "name": "Dumbbell Hammer Curls", "muscles": ["Biceps", "Forearms"], "equipment": "Dumbbell" },
+        { "name": "Preacher Curls", "muscles": ["Biceps"], "equipment": "Machine or Barbell" },
+        { "name": "Tricep Dips", "muscles": ["Triceps"], "equipment": "Bodyweight" },
+        { "name": "Tricep Pushdowns", "muscles": ["Triceps"], "equipment": "Cable Machine" },
+        { "name": "Skull Crushers", "muscles": ["Triceps"], "equipment": "Barbell or EZ Bar" }
+      ]
+    },
+    {
+      "portion": "Core",
+      "exercises": [
+        { "name": "Plank", "muscles": ["Core", "Shoulders"], "equipment": "Bodyweight" },
+        { "name": "Sit-ups", "muscles": ["Abs"], "equipment": "Bodyweight" },
+        { "name": "Leg Raises", "muscles": ["Lower Abs"], "equipment": "Bodyweight" },
+        { "name": "Russian Twists", "muscles": ["Obliques", "Abs"], "equipment": "Bodyweight or Dumbbell" },
+        { "name": "Cable Crunches", "muscles": ["Abs"], "equipment": "Cable Machine" },
+        { "name": "Bicycle Crunches", "muscles": ["Abs", "Obliques"], "equipment": "Bodyweight" }
+      ]
+    }
+  ]
+  

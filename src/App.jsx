@@ -1,4 +1,4 @@
-import './App.css'
+// import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import Navbar from './components/public/navbar'
@@ -12,6 +12,7 @@ import Notes from './components/pages/notes/notes'
 // import Message from './components/pages/message/message'
 import Playground from './components/pages/playground/playground'
 import Calendar from './components/pages/calendar/calendar'
+import Recording from './components/pages/calendar/recording'
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.status);
@@ -21,7 +22,7 @@ function App() {
       {isLoggedIn ? (
         <div className="flex flex-col min-h-screen m-10">
           <Navbar/>
-          <div className="flex-1 px-4 py-6 bg-gray-50">
+          <div className="flex-1 px-4 py-6">
             <Routes>
               <Route path="/home/:username" element={<Home />} />
               <Route path="/spend" element={<Spend />} />
@@ -32,6 +33,7 @@ function App() {
               {/* <Route path="/message" element={<Message />}></Route> */}
               <Route path="/playground/*" element={<Playground />}></Route>
               <Route path="/calendar" element={<Calendar />}></Route>
+              <Route path='/recording' element={<Recording />}></Route>
             </Routes>
           </div>
           

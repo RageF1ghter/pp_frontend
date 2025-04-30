@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Modal from 'react-modal'
+import { useNavigate } from "react-router-dom";
 
 const Calendar = () => {
     const userId = useSelector(state => state.auth.userId);
@@ -13,6 +14,7 @@ const Calendar = () => {
     const [cells, setCells] = useState([]);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
     // const [records, setRecords] = useState([]);
 
 
@@ -159,6 +161,7 @@ const Calendar = () => {
     }
 
     const startRecord = () => {
+        navigate('/recording')
         console.log('start record');
     }
 
