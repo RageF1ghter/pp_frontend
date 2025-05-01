@@ -3,6 +3,10 @@ import { useSelector } from "react-redux";
 import Modal from 'react-modal'
 import { useNavigate } from "react-router-dom";
 
+
+//TODO: cascade delete records
+//TODO: add weight input field
+//TODO: add finish logic
 const Calendar = () => {
     const userId = useSelector(state => state.auth.userId);
     const URL = `http://3.89.31.205:5000/workout`
@@ -181,7 +185,7 @@ const Calendar = () => {
                         ))}
                     </div>
 
-                    <div className="days grid grid-cols-7 auto-rows-[100px]">
+                    <div className="days grid grid-cols-7 auto-rows">
                         {cells.map((cell, index) => (
                             <div key={index}
                                 onClick={() => (openModal(cell.day, null))}
@@ -190,6 +194,17 @@ const Calendar = () => {
                                 {cell.day===today.getDate() && currentMonth===today.getMonth()+1 && currentYear===today.getFullYear() ? 
                                    <div>
                                         {cell.day}
+                                        {cell.records && cell.records.map(record =>
+                                            <p key={record._id}
+                                                onClick={(e) => {
+                                                    openModal(cell.day, record);
+                                                    e.stopPropagation();
+                                                }}
+                                                className="hover:bg-gray-200 cursor-pointer"
+                                            >
+                                                {`${record.category} ${parseInt(record.duration)} mins`}
+                                            </p>
+                                        )}
                                         <button
                                             className="bg-rose-400 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
                                             onClick={(e) => (e.stopPropagation(), startRecord())}

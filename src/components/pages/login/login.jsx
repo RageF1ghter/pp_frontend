@@ -48,13 +48,18 @@ const Login = () => {
 
     return (
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} 
+            className='flex flex-col gap-3 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+            bg-gray-300 p-2 rounded-lg w-96'
+            
+        >
             <label htmlFor="email">Email: </label>
             <input 
                 type="text" 
                 id="email" 
                 value ={email} 
                 onChange={(e) => setEmail(e.target.value)}
+                className='bg-gray-200 rounded-lg'
             />
             <label htmlFor="password">Password: </label>
             <input 
@@ -62,6 +67,7 @@ const Login = () => {
                 id="password" 
                 value ={password} 
                 onChange={(e) => setPassword(e.target.value)}
+                className='bg-gray-200 rounded-lg'
             />
             <button type="submit">Login</button>
         </form>
