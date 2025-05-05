@@ -4,9 +4,6 @@ import Modal from 'react-modal'
 import { useNavigate } from "react-router-dom";
 
 
-//TODO: cascade delete records
-//TODO: add weight input field
-//TODO: add finish logic
 const Calendar = () => {
     const userId = useSelector(state => state.auth.userId);
     const URL = `http://3.89.31.205:5000/workout`
@@ -100,6 +97,7 @@ const Calendar = () => {
 
     const updateRecord = async () => {
         try{
+            console.log(selectedRecord);
             const res = await fetch(`${URL}/update`, {
                 method: 'PUT',
                 headers: {
@@ -126,7 +124,7 @@ const Calendar = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({_id : selectedRecord._id})
+                body: JSON.stringify({_id : selectedRecord._id, detailsId: selectedRecord.details || ''})
             });
             if (res.ok) {
                 console.log('Record deleted successfully');
@@ -151,7 +149,8 @@ const Calendar = () => {
                 category: '',
                 duration: '',
                 date: date,
-                note: ''
+                notes: '',
+                details: ''
             }
             setSelectedRecord(emptyRecord);
         } else {
@@ -164,9 +163,33 @@ const Calendar = () => {
         setSelectedRecord(null);
     }
 
-    const startRecord = () => {
-        navigate('/recording')
-        console.log('start record');
+    const startRecord = async () => {
+        try {
+            
+            const startTime = new Date().toISOString();
+            console.log(userId, startTime);
+            const res = await fetch(`${URL}/initrecord`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userId: userId, startTime: startTime}),
+            });
+            const data = await res.json();
+            console.log(data);
+            localStorage.setItem('recordId', data.recordId);
+            navigate('/recording')
+            console.log('start record');
+        } catch (error) {
+            console.log(error, 'Error starting record');
+        }
+        
+    }
+
+    const viewDetails = (detailsId) => {
+        localStorage.setItem('detailsId', detailsId);
+        navigate(`/details/${detailsId}`);
+
     }
 
     useEffect(() => {
@@ -190,7 +213,8 @@ const Calendar = () => {
                             <div key={index}
                                 onClick={() => (openModal(cell.day, null))}
                                 className="pb-8 border border-gray-200 text-left align-top"
-                            >
+                            >   
+                            
                                 {cell.day===today.getDate() && currentMonth===today.getMonth()+1 && currentYear===today.getFullYear() ? 
                                    <div>
                                         {cell.day}
@@ -202,7 +226,7 @@ const Calendar = () => {
                                                 }}
                                                 className="hover:bg-gray-200 cursor-pointer"
                                             >
-                                                {`${record.category} ${parseInt(record.duration)} mins`}
+                                                {`${record.category} ${Math.floor(parseInt(record.duration))} mins`}
                                             </p>
                                         )}
                                         <button
@@ -224,7 +248,7 @@ const Calendar = () => {
                                             }}
                                             className="hover:bg-gray-200 cursor-pointer"
                                         >
-                                            {`${record.category} ${record.duration} mins`}
+                                            {`${record.category} ${Math.floor(parseInt(record.duration))} mins`}
                                         </p>
                                     )}
                                 </div>)
@@ -271,11 +295,11 @@ const Calendar = () => {
                         </div>
 
                         <div className="flex flex-col gap-0.5">
-                            <label htmlFor="note" className="text-xs">Note:</label>
-                            <input type="text" id="note"
+                            <label htmlFor="notes" className="text-xs">Notes:</label>
+                            <input type="text" id="notes"
                                 className="bg-emerald-50 rounded-sm px-2 py-1"
-                                value={selectedRecord.note}
-                                onChange={(e) => setSelectedRecord({ ...selectedRecord, note: e.target.value })}
+                                value={selectedRecord.notes}
+                                onChange={(e) => setSelectedRecord({ ...selectedRecord, notes: e.target.value })}
                             />
                         </div>
 
@@ -300,6 +324,14 @@ const Calendar = () => {
                                 >
                                     Close
                                 </button>
+                                {selectedRecord.details && selectedRecord.details !== '' && (
+                                    <button
+                                        className="bg-sky-300 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
+                                        onClick={() => viewDetails(selectedRecord.details)}
+                                    >
+                                        Details
+                                    </button>
+                                )}
                             </div>
                         ) : (
                             <div className="flex flex-row gap-2">

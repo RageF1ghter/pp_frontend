@@ -13,6 +13,7 @@ import Notes from './components/pages/notes/notes'
 import Playground from './components/pages/playground/playground'
 import Calendar from './components/pages/calendar/calendar'
 import Recording from './components/pages/calendar/recording'
+import Details from './components/pages/calendar/details'
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.status);
@@ -34,6 +35,7 @@ function App() {
               <Route path="/playground/*" element={<Playground />}></Route>
               <Route path="/calendar" element={<Calendar />}></Route>
               <Route path='/recording' element={<Recording />}></Route>
+              <Route path='/details/*' element={<Details />}></Route>
             </Routes>
           </div>
           
