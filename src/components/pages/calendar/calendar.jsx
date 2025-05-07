@@ -20,7 +20,7 @@ const Calendar = () => {
 
 
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
+    const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const prevMonth = () => {
         if (currentMonth === 1) {
             setCurrentYear(currentYear - 1);
@@ -63,8 +63,15 @@ const Calendar = () => {
             // console.log(data);
             // const tempCells = [...cells];
             for (let record of data) {
-                const day = parseInt(record.date.split("-")[2].split("T")[0]);
-                cellsOfMonth.find(cell => cell.day === day).records.push(record);
+                const loaclDate = new Date(record.date);
+                const day = loaclDate.getDate();
+                const month = loaclDate.getMonth() + 1;
+                // const day = parseInt(record.date.split("-")[2].split("T")[0]);
+                // cellsOfMonth.find(cell => (cell.day === day && currentMonth === month)).records.push(record);
+                const cell = cellsOfMonth.find(cell => (cell.day === day && currentMonth === month));
+                if (cell) {
+                    cell.records.push(record);
+                }
             }
             setCells([...cellsOfMonth]);
         } catch (error) {
@@ -140,15 +147,22 @@ const Calendar = () => {
 
     // open the modal and init the selected record
     const openModal = (day, record) => {
+        if(day === undefined) return;
         console.log(day, record);
         setOpen(true);
         if (!record) {
-            const date = `${currentYear}-${currentMonth}-${day}`;
+            // Avoid forgetting set the hour and cause date jump
+            const currentDate = new Date();
+            currentDate.setFullYear(currentYear);
+            currentDate.setMonth(currentMonth - 1);
+            currentDate.setDate(day);
+            
+            // const date = `${currentYear}-${currentMonth}-${day}T21:01:00.000Z`;
             const emptyRecord = {
                 userId: userId,
                 category: '',
                 duration: '',
-                date: date,
+                date: currentDate.toISOString(),
                 notes: '',
                 details: ''
             }
@@ -200,8 +214,8 @@ const Calendar = () => {
     return (
         <>
             <div>
-                <h1>Calendar</h1>
                 <div className="calendar">
+                    <h1 className="text-2xl font-extrabold">{monthsOfYear[currentMonth]}</h1>
                     <div className="dayOfWeek grid grid-cols-7 text-center font-bold">
                         {daysOfWeek.map((day, index) => (
                             <div key={index} className="py-2">{day}</div>
@@ -276,6 +290,23 @@ const Calendar = () => {
                         absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                     >
                         <h2>{selectedRecord.date.split('T')[0]}</h2>
+                        <div>
+                            <label htmlFor="time" className="text-xs">Time:</label>
+                            <input type="time" id="time" 
+                                value={new Date(selectedRecord.date).toLocaleTimeString('en-GB', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: false,
+                                })}
+                                onChange={e => {
+                                    const [hours, minutes] = e.target.value.split(':');
+                                    const newDate = new Date(selectedRecord.date);
+                                    newDate.setHours(hours, minutes);
+                                    setSelectedRecord({ ...selectedRecord, date: newDate.toISOString() });
+                                }}
+                                required
+                            />
+                        </div>
                         <div className="flex flex-col gap-0.5">
                             <label htmlFor="category" className="text-xs">Category:</label>
                             <input type="text" id="category"
