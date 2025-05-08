@@ -13,7 +13,7 @@ const Navbar = () => {
 
     const handleResize = () => {
         setWidth(window.innerWidth);
-        console.log(width);
+        // console.log(width);
     }
 
     useEffect(() => {

@@ -223,51 +223,35 @@ const Calendar = () => {
                     </div>
 
                     <div className="days grid grid-cols-7 auto-rows">
+                        {/* cell setup */}
                         {cells.map((cell, index) => (
                             <div key={index}
                                 onClick={() => (openModal(cell.day, null))}
                                 className="pb-8 border border-gray-200 text-left align-top"
                             >   
-                            
-                                {cell.day===today.getDate() && currentMonth===today.getMonth()+1 && currentYear===today.getFullYear() ? 
-                                   <div>
-                                        {cell.day}
-                                        {cell.records && cell.records.map(record =>
-                                            <p key={record._id}
-                                                onClick={(e) => {
-                                                    openModal(cell.day, record);
-                                                    e.stopPropagation();
-                                                }}
-                                                className="hover:bg-gray-200 cursor-pointer"
-                                            >
-                                                {`${record.category} ${Math.floor(parseInt(record.duration))} mins`}
-                                            </p>
-                                        )}
-                                        <button
-                                            className="bg-rose-400 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
-                                            onClick={(e) => (e.stopPropagation(), startRecord())}
-                                        >
-                                            Start Record
-                                        </button>
-                                   </div>
-                                   
-                                : 
-                                (<div>
-                                    {cell.day || ""}
-                                    {cell.records && cell.records.map(record =>
-                                        <p key={record._id}
-                                            onClick={(e) => {
-                                                openModal(cell.day, record);
-                                                e.stopPropagation();
-                                            }}
-                                            className="hover:bg-gray-200 cursor-pointer"
-                                        >
-                                            {`${record.category} ${Math.floor(parseInt(record.duration))} mins`}
-                                        </p>
-                                    )}
-                                </div>)
-                                
+                                <p>{cell.day}</p>
+                                {cell.records && cell.records.map(record =>
+                                    <p key={record._id}
+                                        onClick={(e) => {
+                                            openModal(cell.day, record);
+                                            e.stopPropagation();
+                                        }}
+                                        className="hover:bg-gray-200 cursor-pointer"
+                                    >
+                                        {`${(record.category).toUpperCase()} ${Math.floor(parseInt(record.duration))} Mins`}
+                                    </p>
+                                )}
+
+                                {/* if today is the day show recording button */}
+                                {cell.day===today.getDate() && currentMonth===today.getMonth()+1 && currentYear===today.getFullYear() && 
+                                    <button
+                                        className="bg-rose-400 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
+                                        onClick={(e) => (e.stopPropagation(), startRecord())}
+                                    >
+                                        Start Record
+                                    </button>
                                 }
+                            
                                 
                             </div>
                         ))}
@@ -279,8 +263,10 @@ const Calendar = () => {
                     <button className="m-3 px-3 py-1 rounded-xl bg-blue-300 hover:bg-blue-500" onClick={nextMonth}>Next</button>
                 </div>
             </div>
-
+            
+            {/* Modal for adding/editing records */}
             <div>
+                {/* Input logic first */}
                 {selectedRecord && (
                     <Modal
                         isOpen={open}
@@ -334,7 +320,7 @@ const Calendar = () => {
                             />
                         </div>
 
-                        
+                        {/* Button logic */}
                         {selectedRecord._id ? (
                             <div className="flex flex-row gap-2">
                                 <button
