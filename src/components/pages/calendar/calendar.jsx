@@ -16,11 +16,26 @@ const Calendar = () => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
-    // const [records, setRecords] = useState([]);
+
+    const [width, setWidth] = useState(window.innerWidth);
+    const threshhold = 768;
+
+    //---Responsive design logic---///
+    const handleResize = () => {
+        setWidth(window.innerWidth);
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize)
+        return () => {
+            removeEventListener('resize', handleResize)
+        }
+    })
 
 
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const logos = []
     const prevMonth = () => {
         if (currentMonth === 1) {
             setCurrentYear(currentYear - 1);
@@ -212,50 +227,52 @@ const Calendar = () => {
 
  
     return (
-        <>
-            <div>
-                <div className="calendar">
-                    <h1 className="text-2xl font-extrabold">{monthsOfYear[currentMonth]}</h1>
-                    <div className="dayOfWeek grid grid-cols-7 text-center font-bold">
-                        {daysOfWeek.map((day, index) => (
-                            <div key={index} className="py-2">{day}</div>
-                        ))}
-                    </div>
+        <div>
+            <div className="flex flex-col p-1">
+                <h1 className="text-2xl font-extrabold">{monthsOfYear[currentMonth]}</h1>
 
-                    <div className="days grid grid-cols-7 auto-rows">
-                        {/* cell setup */}
-                        {cells.map((cell, index) => (
-                            <div key={index}
-                                onClick={() => (openModal(cell.day, null))}
-                                className="pb-8 border border-gray-200 text-left align-top"
-                            >   
-                                <p>{cell.day}</p>
-                                {cell.records && cell.records.map(record =>
-                                    <p key={record._id}
-                                        onClick={(e) => {
-                                            openModal(cell.day, record);
-                                            e.stopPropagation();
-                                        }}
-                                        className="hover:bg-gray-200 cursor-pointer"
-                                    >
-                                        {`${(record.category).toUpperCase()} ${Math.floor(parseInt(record.duration))} Mins`}
-                                    </p>
-                                )}
+                <div className="grid grid-cols-7 text-center font-bold">
+                    {daysOfWeek.map((day, index) => (
+                        <div key={index} className="py-2">{day}</div>
+                    ))}
+                </div>
 
-                                {/* if today is the day show recording button */}
-                                {cell.day===today.getDate() && currentMonth===today.getMonth()+1 && currentYear===today.getFullYear() && 
-                                    <button
-                                        className="bg-rose-400 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
-                                        onClick={(e) => (e.stopPropagation(), startRecord())}
-                                    >
-                                        Start Record
-                                    </button>
-                                }
+                <div className="grid grid-cols-7 auto-rows-fr">
+                    {/* cell setup */}
+                    {cells.map((cell, index) => (
+                        <div key={index}
+                            onClick={() => (openModal(cell.day, null))}
+                            className="pb-8 border border-gray-200 text-left align-top"
+                        >   
+                            <p>{cell.day}</p>
+                            {cell.records && cell.records.map(record =>
+                                <p key={record._id}
+                                    className="hover:bg-gray-200 cursor-pointer text-sm font-medium"
+                                    onClick={(e) => {
+                                        openModal(cell.day, record);
+                                        e.stopPropagation();
+                                    }}
+                                >
+                                    <span>{(record.category).toUpperCase()}</span>
+                                    <br />
+                                    <span>{Math.floor(parseInt(record.duration))} Mins</span>
+                                    
+                                </p>
+                            )}
+
+                            {/* if today is the day show recording button */}
+                            {cell.day===today.getDate() && currentMonth===today.getMonth()+1 && currentYear===today.getFullYear() && 
+                                <button
+                                    className="w-full bg-rose-400 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
+                                    onClick={(e) => (e.stopPropagation(), startRecord())}
+                                >
+                                    Start Record
+                                </button>
+                            }
+                        
                             
-                                
-                            </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
 
                 <div className="flex flex-row justify-center">
@@ -263,6 +280,8 @@ const Calendar = () => {
                     <button className="m-3 px-3 py-1 rounded-xl bg-blue-300 hover:bg-blue-500" onClick={nextMonth}>Next</button>
                 </div>
             </div>
+
+            
             
             {/* Modal for adding/editing records */}
             <div>
@@ -373,7 +392,7 @@ const Calendar = () => {
                     </Modal>
                 )}
             </div>
-        </>
+        </div>
 
 
     )

@@ -21,9 +21,9 @@ function App() {
   return (
     <Router>
       {isLoggedIn ? (
-        <div className="flex flex-col min-h-screen m-10">
+        <div className="flex flex-col gap-20">
           <Navbar/>
-          <div className="flex-1 px-4 py-6">
+          <div>
             <Routes>
               <Route path="/home/:username" element={<Home />} />
               <Route path="/spend" element={<Spend />} />

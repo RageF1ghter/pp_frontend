@@ -13,9 +13,6 @@ const Recording = () => {
     const [replication, setReplication] = useState(0);
     const [coolingTime, setCoolingTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
-    const [currentSet, setCurrentSet] = useState(null);
-
-    const [width, setWidth] = useState(window.innerWidth);
 
     const navigate = useNavigate();
 
@@ -23,17 +20,7 @@ const Recording = () => {
     const URL = `http://3.89.31.205:5000/workout`;
     const userId = useSelector((state) => state.auth.userId);
 
-    //---Responsive design logic---///
-    const handleResize = () => {
-        setWidth(window.innerWidth);
-    }
-
-    useEffect(() => {
-        window.addEventListener('resize', handleResize)
-        return () => {
-            removeEventListener('resize', handleResize)
-        }
-    })
+    
 
 
     ///---Selection Logic---///
@@ -170,7 +157,7 @@ const Recording = () => {
 
 
     return (
-        <div className="h-screen flex flex-col gap-5 justify-center">
+        <div className=" flex flex-col gap-5">
             {isRunning? 
                 <h1 className="text-3xl ">Recording: <span className="text-green-500 font-bold">{timeDisplay(duration)}</span> </h1> :
                 <h1 className="text-3xl ">Cooling down: <span className="text-red-500 font-bold">{timeDisplay(coolingTime)}</span> </h1>
