@@ -148,6 +148,7 @@ const Recording = () => {
             });
             if (res.ok) {
                 alert('Record uploaded successfully!');
+                localStorage.removeItem('recordId');
                 navigate('/calendar');
             }
         } catch (error) {

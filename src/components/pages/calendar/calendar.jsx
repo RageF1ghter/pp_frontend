@@ -16,6 +16,7 @@ const Calendar = () => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+    const recordId = localStorage.getItem('recordId');
 
     const [width, setWidth] = useState(window.innerWidth);
     const threshhold = 768;
@@ -52,6 +53,11 @@ const Calendar = () => {
         } else {
             setCurrentMonth(currentMonth + 1);
         }
+    }
+
+    const isToday = (day) => {
+        if(day===today.getDate() && currentMonth===today.getMonth()+1 && currentYear===today.getFullYear()) return true;
+        return false;
     }
 
     const getRecords = async () => {
@@ -194,7 +200,6 @@ const Calendar = () => {
 
     const startRecord = async () => {
         try {
-            
             const startTime = new Date().toISOString();
             console.log(userId, startTime);
             const res = await fetch(`${URL}/initrecord`, {
@@ -213,6 +218,10 @@ const Calendar = () => {
             console.log(error, 'Error starting record');
         }
         
+    }
+
+    const keepRecording = () => {
+        navigate('/recording');
     }
 
     const viewDetails = (detailsId) => {
@@ -261,13 +270,23 @@ const Calendar = () => {
                             )}
 
                             {/* if today is the day show recording button */}
-                            {cell.day===today.getDate() && currentMonth===today.getMonth()+1 && currentYear===today.getFullYear() && 
-                                <button
-                                    className="w-full bg-rose-400 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
-                                    onClick={(e) => (e.stopPropagation(), startRecord())}
-                                >
-                                    Start Record
-                                </button>
+                            {isToday(cell.day) && 
+                                (!recordId ?
+                                    <button
+                                        className="w-full bg-rose-400 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
+                                        onClick={(e) => (e.stopPropagation(), startRecord())}
+                                    >
+                                        Start Record
+                                    </button>
+                                    :
+                                    <button
+                                        className="w-full bg-rose-400 text-white px-2 py-1 rounded-sm hover:cursor-pointer"
+                                        onClick={(e) => (e.stopPropagation(), keepRecording())}
+                                    >
+                                        Keep Recording
+                                    </button>
+                                )
+ 
                             }
                         
                             

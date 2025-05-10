@@ -1,6 +1,4 @@
 // import './App.css'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import { useSelector } from 'react-redux'
 import Navbar from './components/public/navbar'
 import Home from './components/pages/home/home'
 import Spend from './components/pages/spend/spend'
@@ -15,9 +13,33 @@ import Calendar from './components/pages/calendar/calendar'
 import Recording from './components/pages/calendar/recording'
 import Details from './components/pages/calendar/details'
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect, useState } from "react"
+import {jwtDecode} from 'jwt-decode';
+import { login } from './redux/authSlice';
+
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.status);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      const decodedJwt = jwtDecode(jwt);
+      console.log('Decoded JWT:', decodedJwt);
+      // updateState(decodedJwt)
+      dispatch(login({
+        userId: decodedJwt.id,
+        username: decodedJwt.username,
+        email: decodedJwt.email,
+        status: true
+      }));
+    }
+  },[])
   // const username = useSelector((state) => state.auth.username);
+
   return (
     <Router>
       {isLoggedIn ? (
@@ -36,6 +58,8 @@ function App() {
               <Route path="/calendar" element={<Calendar />}></Route>
               <Route path='/recording' element={<Recording />}></Route>
               <Route path='/details/*' element={<Details />}></Route>
+              <Route path='/login' element={<Login />}></Route>
+              <Route path='*' element={<Login />}></Route>
             </Routes>
           </div>
           
@@ -55,4 +79,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
