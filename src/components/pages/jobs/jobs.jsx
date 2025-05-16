@@ -5,6 +5,7 @@ export default function Jobs() {
     const URL = `http://3.89.31.205:5000/jobs`
     const userId = useSelector((state) => state.auth.userId);
     const [records, setRecords] = useState([]);
+    const [displayRecords, setDisplayRecords] = useState([]);
     const [newApp, setNewApp] = useState({
         company: "",
         dateString: new Date().toISOString(),
@@ -64,6 +65,7 @@ export default function Jobs() {
                 const data = await res.json();
                 console.log(data);
                 setRecords(data);
+                setDisplayRecords(data);
             }
         } catch (error) {
             console.error("Error fetching records:", error);
@@ -84,6 +86,7 @@ export default function Jobs() {
             if (res.ok) {
                 const restRecords = records.filter((record) => record._id !== id);
                 setRecords(restRecords);
+                setDisplayRecords(restRecords);
                 console.log("Application deleted successfully!");
             }
         } catch (error) {
@@ -115,6 +118,7 @@ export default function Jobs() {
                     return record;
                 });
                 setRecords(updatedRecords);
+                setDisplayRecords(updatedRecords);
                 console.log("Application updated successfully!");
             }
         } catch (error) {
@@ -138,6 +142,7 @@ export default function Jobs() {
                 return record;
             })
             setRecords(newReocrds);
+            setDisplayRecords(newReocrds);
             setSelectedRecord(null);
         } catch (error) {
             console.error("Error cancelling modification:", error);
@@ -156,30 +161,35 @@ export default function Jobs() {
             }
             return record;
         });
-        setRecords(newRecords);
+        // setRecords(newRecords);
+        setDisplayRecords(newRecords);
     }
     const handleSort = () => {
         if (filter.sortBydate === "asc") {
             const sortedRecords = records.sort((a, b) => new Date(b.date) - new Date(a.date));
-            setRecords([...sortedRecords]);
+            // setRecords([...sortedRecords]);
+            setDisplayRecords(sortedRecords);
             setFilter({ ...filter, sortBydate: "desc" });
         } else {
             const sortedRecords = records.sort((a, b) => new Date(a.date) - new Date(b.date));
-            setRecords([...sortedRecords]);
+            // setRecords([...sortedRecords]);
+            setDisplayRecords(sortedRecords);
             setFilter({ ...filter, sortBydate: "asc" });
         }
 
     }
-
     const handleSearch = (name) => {
         const filteredRercords = records.filter((record) => record.company.toLowerCase().includes(name.toLowerCase()));
-        setRecords(filteredRercords);
+        // setRecords(filteredRercords);
+        setDisplayRecords(filteredRercords);
     };
 
+    // search by company
     useEffect(() => {
         if (filter.company === "") {
-            fetchRecords();
+            // fetchRecords();
             // setDebouncedCompany("");
+            setDisplayRecords(records);
         } else {
             const timer = setTimeout(() => {
                 handleSearch(filter.company);
@@ -189,12 +199,20 @@ export default function Jobs() {
 
     }, [filter.company]);
 
+    // filter by status
+    useEffect(() => {
+        const filteredRecords = records.filter((record) => record.status === filter.status);
+        setDisplayRecords(filteredRecords);
+    },[filter.status]);
+
+
     useEffect(() => {
         fetchRecords();
     }, []);
 
 
-
+    let lastDate = new Date().toLocaleDateString();
+    let toggleColor = false;
     return (
         <div className="flex flex-col gap-5">
             <form onSubmit={handleAdd} className="flex flex-row gap-2 justify-center">
@@ -224,6 +242,7 @@ export default function Jobs() {
                     <option value="rejected">REJECT</option>
                     <option value="in progress">IN PROGRESS</option>
                 </select>
+                
                 {filter.sortBydate !== "asc" ?
                     <button onClick={() => handleSort()} className="bg-gray-300 p-2 rounded-2xl">New to Old</button>
                     :
@@ -234,11 +253,13 @@ export default function Jobs() {
                     <input type="text" className="border-2" value={filter.company} onChange={(e) => setFilter({ ...filter, company: e.target.value })} />
                 </div>
 
+                <button className="bg-green-300 p-2 rounded-2xl" onClick={() => setDisplayRecords(records)}>Reset Filter</button>
+
             </div>
 
             {/* Table */}
             <div className="flex justify-center">
-                <table className="table-auto border-2 border-black border-collapse w-2/3 ">
+                <table className="border-2 border-black border-collapse w-2/3 mb-5">
                     <thead>
                         <tr className="border-2 border-black divide-x-2">
                             <td className="px-5 py-0.5">Company</td>
@@ -249,10 +270,19 @@ export default function Jobs() {
                         </tr>
 
                     </thead>
+                    
                     <tbody>
-                        {records.length > 0 && records.map((record) => {
+                        {displayRecords.length > 0 && displayRecords.map((record) => {
+                            const currentDate = new Date(record.date).toLocaleDateString();
+                            if(currentDate !== lastDate) {
+                                toggleColor = !toggleColor;
+                                lastDate = currentDate;
+                            }
+                            const toggleColorClass = toggleColor ? "bg-gray-200" : "bg-white";
                             return (
-                                <tr key={record._id} className="border-2 border-black divide-x-2">
+                                <tr key={record._id} className={`border-2 border-black divide-x-2
+                                    ${toggleColorClass}
+                                `}>
                                     <td className="px-5 py-0.5">{record.company}</td>
                                     <td className="px-5 py-0.5">{new Date(record.date).toLocaleDateString()}</td>
                                     <td className="px-5 py-0.5">
