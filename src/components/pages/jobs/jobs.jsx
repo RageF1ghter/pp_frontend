@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 export default function Jobs() {
+    const URL = `http://3.89.31.205:5000/jobs`
     const userId = useSelector((state) => state.auth.userId);
     const [records, setRecords] = useState([]);
     const [newApp, setNewApp] = useState({
@@ -51,7 +52,7 @@ export default function Jobs() {
 
     const fetchRecords = async () => {
         try {
-            const res = await fetch('http://localhost:5000/jobs?userId=67a28b8829f3ba8beda0e216', {
+            const res = await fetch(`${URL}?userId=67a28b8829f3ba8beda0e216`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ export default function Jobs() {
 
     const handleDelete = async (id) => {
         try {
-            const res = await fetch(`http://localhost:5000/jobs/delete`, {
+            const res = await fetch(`${URL}/delete`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,7 +94,7 @@ export default function Jobs() {
     const handleUpdate = async () => {
         try {
             if (!selectedRecord) return;
-            const res = await fetch(`http://localhost:5000/jobs/update`, {
+            const res = await fetch(`${URL}/update`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ export default function Jobs() {
 
     const handleCancel = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/jobs/getById?id=${selectedRecord._id}`, {
+            const res = await fetch(`${URL}/getById?id=${selectedRecord._id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
