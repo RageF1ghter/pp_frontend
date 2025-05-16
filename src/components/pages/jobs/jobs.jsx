@@ -25,7 +25,7 @@ export default function Jobs() {
     const handleAdd = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/jobs/add', {
+            const res = await fetch(`${URL}/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
