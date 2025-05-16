@@ -60,9 +60,11 @@ const Navbar = () => {
                             {/* <li><Link className="hover:text-amber-200" to="/notes" onClick={() => setIsExpanded(false)}>Notes</Link></li> */}
                             <li><Link className="hover:text-amber-200" to="/playground" onClick={() => setIsExpanded(false)}>Playground</Link></li>
                             <li><Link className="hover:text-amber-200" to="/calendar" onClick={() => setIsExpanded(false)}>Calendar</Link></li>
+                            <li><Link className="hover:text-amber-200" to="/jobs" onClick={() => setIsExpanded(false)}>Jobs</Link></li>
+                            <li>More...</li>
                             <li><button className="hover:text-amber-200" onClick={() => handleLogout()}>Logout</button></li>
                             <li><button className="hover:text-blue-200" onClick={() => setIsExpanded(false)}>Collapse</button></li>
-                            
+
                         </ul>
                     :
                         <button 
@@ -86,6 +88,7 @@ const Navbar = () => {
                         {/* <li><Link className="hover:text-amber-200" to="/notes">Notes</Link></li> */}
                         <li><Link className="hover:text-amber-200" to="/playground">Playground</Link></li>
                         <li><Link className="nav-link" to="/calendar">Calendar</Link></li>
+                        <li><Link className="hover:text-amber-200" to="/jobs" onClick={() => setIsExpanded(false)}>Jobs</Link></li>
                         <li>More...</li>
                         <li><button className="hover:text-amber-200" onClick={() => handleLogout()}>Logout</button></li>
                         <button className="ml-auto mr-0" onClick={toggleTheme}>

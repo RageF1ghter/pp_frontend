@@ -12,6 +12,7 @@ import Playground from './components/pages/playground/playground'
 import Calendar from './components/pages/calendar/calendar'
 import Recording from './components/pages/calendar/recording'
 import Details from './components/pages/calendar/details'
+import Jobs from './components/pages/jobs/jobs'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { useSelector, useDispatch } from 'react-redux'
@@ -59,6 +60,7 @@ function App() {
               <Route path='/recording' element={<Recording />}></Route>
               <Route path='/details/*' element={<Details />}></Route>
               <Route path='/login' element={<Login />}></Route>
+              <Route path='/jobs' element={<Jobs />}></Route>
               <Route path='*' element={<Login />}></Route>
             </Routes>
           </div>
