@@ -9,7 +9,7 @@ const Calendar = () => {
     const URL = `http://3.89.31.205:5000/workout`
     const today = new Date();
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth()+1);
     const [currentDay, setCurrentDay] = useState(new Date().getDate());
     const [currentDayOfWeek, setCurrentDayOfWeek] = useState(today.getDay());
     const [cells, setCells] = useState([]);
@@ -36,7 +36,7 @@ const Calendar = () => {
 
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const logos = []
+
     const prevMonth = () => {
         if (currentMonth === 1) {
             setCurrentYear(currentYear - 1);
@@ -238,7 +238,7 @@ const Calendar = () => {
     return (
         <div>
             <div className="flex flex-col p-1 m-5 max-w-4xl mx-auto bg-white rounded-lg shadow-xl">
-                <h1 className="text-2xl font-extrabold">{monthsOfYear[currentMonth]}</h1>
+                <h1 className="text-2xl font-extrabold">{monthsOfYear[currentMonth-1]}</h1>
 
                 <div className="grid grid-cols-7 text-center font-bold">
                     {daysOfWeek.map((day, index) => (

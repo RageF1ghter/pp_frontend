@@ -13,6 +13,7 @@ const Recording = () => {
     const [replication, setReplication] = useState(0);
     const [coolingTime, setCoolingTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
+    const [finishedSets, setFinishedSets] = useState([]);
 
     const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ const Recording = () => {
     const URL = `http://3.89.31.205:5000/workout`;
     const userId = useSelector((state) => state.auth.userId);
 
-    
+
 
 
     ///---Selection Logic---///
@@ -62,9 +63,9 @@ const Recording = () => {
             timer = setInterval(() => {
                 setDuration((second) => second + 1);
             }, 1000);
-        }else{
+        } else {
             timer = setInterval(() => {
-                setCoolingTime((second) => second + 1);  
+                setCoolingTime((second) => second + 1);
             }, 1000);
         }
         return () => clearInterval(timer);
@@ -80,7 +81,7 @@ const Recording = () => {
 
     ///---Recording logic---///
     const handleRecording = async () => {
-        
+
         // finishing the current set, update the detailed record
         if (isRunning) {
             setIsRunning(false);
@@ -97,7 +98,8 @@ const Recording = () => {
                     "weight": weight,
                     "replication": replication
                 }
-                
+                setFinishedSets((prevSets) => [...prevSets, newRecord]);
+
                 const res = await fetch(`${URL}/updaterecord`, {
                     method: 'PUT',
                     headers: {
@@ -106,6 +108,7 @@ const Recording = () => {
                     body: JSON.stringify(newRecord)
                 });
                 if (res.ok) {
+
                     console.log('Record updated successfully!');
                 }
             } catch (error) {
@@ -117,7 +120,7 @@ const Recording = () => {
         else {
             console.log(selectedWorkout, selectedExercise);
             if (selectedWorkout === 'SELECT PORTION' || selectedExercise === 'SELECT EXERCISE') {
-                
+
                 alert('Please select a portion and an exercise first!');
                 return;
             }
@@ -158,61 +161,102 @@ const Recording = () => {
 
 
     return (
-        <div className=" flex flex-col gap-5">
-            {isRunning? 
-                <h1 className="text-3xl ">Recording: <span className="text-green-500 font-bold">{timeDisplay(duration)}</span> </h1> :
-                <h1 className="text-3xl ">Cooling down: <span className="text-red-500 font-bold">{timeDisplay(coolingTime)}</span> </h1>
-            }
-            <div className="flex flex-col bg-teal-300/50  p-2 rounded-lg gap-2">
-                <p className="font-bold">Portion</p>
-                <select
-                    className="bg-teal-100/80 border-1 rounded-md p-1 hover:bg-teal-100 cursor-pointer"
-                    onChange={(e) => setSelectedWorkout(e.target.value)} value={selectedWorkout}
-                >
-                    {workouts.map((workout, index) => (
-                        <option value={workout.portion} key={index}>{workout.portion}</option>
-                    ))}
-                    {/* <option>Add More</option> */}
-                </select>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg space-y-6">
 
-                <p className="font-bold">Exercise</p>
-                <select
-                    className="bg-teal-100/80 border-1 rounded-md p-1 hover:bg-teal-100 cursor-pointer"
-                    value={selectedExercise} onChange={(e) => setSelectedExercise(e.target.value)}
-                >
-                    {exercises && exercises.map((exercise, index) => (
-                        <option value={exercise.name} key={index}>{exercise.name}</option>
-                    ))}
-                </select>
+                {/* Timer */}
+                <h1 className="text-2xl font-bold text-center">
+                    {isRunning ? (
+                        <>Recording: <span className="text-sky-500">{timeDisplay(duration)}</span></>
+                    ) : (
+                        <>Cooling Down: <span className="text-red-500">{timeDisplay(coolingTime)}</span></>
+                    )}
+                </h1>
+                
+                {/* Portion and Exercise Selection */}
+                <div className="space-y-4">
+                    <div>
+                        <label className="font-semibold">Portion</label>
+                        <select
+                            className="w-full mt-1 p-2 bg-teal-100 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            value={selectedWorkout}
+                            onChange={(e) => setSelectedWorkout(e.target.value)}
+                        >
+                            {workouts.map((workout, index) => (
+                                <option value={workout.portion} key={index}>{workout.portion}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="font-semibold">Exercise</label>
+                        <select
+                            className="w-full mt-1 p-2 bg-teal-100 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            value={selectedExercise}
+                            onChange={(e) => setSelectedExercise(e.target.value)}
+                        >
+                            {exercises && exercises.map((exercise, index) => (
+                                <option value={exercise.name} key={index}>{exercise.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="font-semibold">Weight</label>
+                        <input
+                            type="number"
+                            value={weight}
+                            onChange={(e) => setWeight(parseInt(e.target.value))}
+                            className="w-full mt-1 p-2 bg-teal-100 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        />
+                    </div>
+                    <div>
+                        <label className="font-semibold">Repetitions</label>
+                        <input
+                            type="number"
+                            value={replication}
+                            onChange={(e) => setReplication(parseInt(e.target.value))}
+                            className="w-full mt-1 p-2 bg-teal-100 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        />
+                    </div>
+                </div>
 
-                <p className="font-bold">Weight</p>
-                <input type="number" value={weight} onChange={(e) => setWeight(parseInt(e.target.value))}
-                    className="bg-teal-100/80 border-1 rounded-md p-1 hover:bg-teal-100 cursor-pointer"
-                />
-
-                <p className="font-bold">Replications</p>
-                <input type="number" value={replication} onChange={(e) => setReplication(parseInt(e.target.value))}
-                    className="bg-teal-100/80 border-1 rounded-md p-1 hover:bg-teal-100 cursor-pointer"
-                />
-                <div className="flex flex-row gap-2 justify-center">
-
-                    <button className="bg-white p-2 rounded-md" onClick={() => handleRecording()}>
+                {/* Buttons */}
+                <div className="flex justify-between gap-4">
+                    <button
+                        onClick={handleRecording}
+                        className="flex-1 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                    >
                         {isRunning ? 'Stop' : 'Start'}
                     </button>
-
-                    <button className="bg-red-600 text-white p-2 rounded-md 
-                        disabled={!isRunning}
-                        disabled:bg-gray-200 disabled:text-black disabled:cursor-not-allowed"
-                        onClick={() => endRecording()}
+                    <button
+                        onClick={endRecording}
+                        disabled={isRunning}
+                        className={`flex-1 py-2 rounded-md transition ${isRunning
+                            ? 'bg-gray-200 text-black cursor-not-allowed'
+                            : 'bg-green-600 text-white hover:bg-green-700'
+                            }`}
                     >
                         {isRunning ? 'End This Set First' : 'Finished'}
                     </button>
                 </div>
-            </div>
 
-            <div>
-                <p>Already Finished: </p>
-                
+                {/* Finished Info */}
+                <div className="pt-4 border-t">
+                    <p className="text-sm font-semibold text-gray-700 mb-2">Already Finished:</p>
+                    {finishedSets.length === 0 ? (
+                        <p className="text-sm text-gray-500">No sets completed yet.</p>
+                    ) : (
+                        <ul className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                            {finishedSets.map((set, index) => (
+                                <li key={index} className="text-sm bg-teal-100 p-2 rounded-md shadow-sm">
+                                    <p><span className="font-medium">Portion:</span> {set.portion}</p>
+                                    <p><span className="font-medium">Exercise:</span> {set.exercise}</p>
+                                    <p><span className="font-medium">Weight:</span> {set.weight} lbs</p>
+                                    <p><span className="font-medium">Reps:</span> {set.replication}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
             </div>
         </div>
 

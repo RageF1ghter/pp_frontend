@@ -118,7 +118,7 @@ const Details = () => {
 
     const handleSave = async (_id) => {
         try {
-            const res = await fetch('http://localhost:5000/workout/editDetails', {
+            const res = await fetch(`${URL}/editDetails`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

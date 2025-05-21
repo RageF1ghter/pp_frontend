@@ -61,7 +61,7 @@ const Navbar = () => {
                             {/* <li><Link className="hover:text-amber-200" to="/playground" onClick={() => setIsExpanded(false)}>Playground</Link></li> */}
                             <li><Link className="hover:text-amber-200" to="/calendar" onClick={() => setIsExpanded(false)}>Workout</Link></li>
                             <li><Link className="hover:text-amber-200" to="/jobs" onClick={() => setIsExpanded(false)}>Jobs</Link></li>
-                            <li>More...</li>
+                            {/* <li>More...</li> */}
                             <li><button className="hover:text-amber-200" onClick={() => handleLogout()}>Logout</button></li>
                             <li><button className="hover:text-blue-200" onClick={() => setIsExpanded(false)}>Collapse</button></li>
 
@@ -89,7 +89,7 @@ const Navbar = () => {
                         {/* <li><Link className="hover:text-amber-200" to="/playground">Playground</Link></li> */}
                         <li><Link className="hover:text-amber-200" to="/calendar">Workout</Link></li>
                         <li><Link className="hover:text-amber-200" to="/jobs" onClick={() => setIsExpanded(false)}>Jobs</Link></li>
-                        <li>More...</li>
+                        {/* <li>More...</li> */}
                         <li className="ml-auto mr-0"><button className="hover:text-red-400 " onClick={() => handleLogout()}>Logout</button></li>
                         {/* <button className="ml-auto mr-0" onClick={toggleTheme}>
                             {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}

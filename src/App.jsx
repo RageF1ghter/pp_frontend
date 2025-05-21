@@ -8,9 +8,9 @@ import Login from './components/pages/login/login'
 // import Notes from './components/pages/notes/notes'
 // import Message from './components/pages/message/message'
 // import Playground from './components/pages/playground/playground'
-import Calendar from './components/pages/calendar/calendar'
-import Recording from './components/pages/calendar/recording'
-import Details from './components/pages/calendar/details'
+import Calendar from './components/pages/workout/calendar'
+import Recording from './components/pages/workout/recording'
+import Details from './components/pages/workout/details'
 import Jobs from './components/pages/jobs/jobs'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
