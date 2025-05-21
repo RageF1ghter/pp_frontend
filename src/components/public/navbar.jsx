@@ -55,11 +55,11 @@ const Navbar = () => {
                         <ul className="flex flex-col fixed top-0 left-0
                          bg-black text-white w-full p-4 gap-3 rounded-b-2xl">
                             <li><Link className="hover:text-amber-200" to="/spend" onClick={() => setIsExpanded(false)}>Spends</Link></li>
-                            <li><Link className="hover:text-amber-200" to="/workout" onClick={() => setIsExpanded(false)}>Workout</Link></li>
-                            <li><Link className="hover:text-amber-200" to="/heatmap" onClick={() => setIsExpanded(false)}>Heatmap</Link></li>
+                            {/* <li><Link className="hover:text-amber-200" to="/workout" onClick={() => setIsExpanded(false)}>Workout</Link></li> */}
+                            {/* <li><Link className="hover:text-amber-200" to="/heatmap" onClick={() => setIsExpanded(false)}>Heatmap</Link></li> */}
                             {/* <li><Link className="hover:text-amber-200" to="/notes" onClick={() => setIsExpanded(false)}>Notes</Link></li> */}
-                            <li><Link className="hover:text-amber-200" to="/playground" onClick={() => setIsExpanded(false)}>Playground</Link></li>
-                            <li><Link className="hover:text-amber-200" to="/calendar" onClick={() => setIsExpanded(false)}>Calendar</Link></li>
+                            {/* <li><Link className="hover:text-amber-200" to="/playground" onClick={() => setIsExpanded(false)}>Playground</Link></li> */}
+                            <li><Link className="hover:text-amber-200" to="/calendar" onClick={() => setIsExpanded(false)}>Workout</Link></li>
                             <li><Link className="hover:text-amber-200" to="/jobs" onClick={() => setIsExpanded(false)}>Jobs</Link></li>
                             <li>More...</li>
                             <li><button className="hover:text-amber-200" onClick={() => handleLogout()}>Logout</button></li>
@@ -83,17 +83,17 @@ const Navbar = () => {
                         p-4 bg-black text-white w-full 
                     ">
                         <li><Link className="hover:text-amber-200" to="/spend">Spends</Link></li>
-                        <li><Link className="hover:text-amber-200" to="/workout">Workout</Link></li>
-                        <li><Link className="hover:text-amber-200" to="/heatmap">Heatmap</Link></li>
+                        {/* <li><Link className="hover:text-amber-200" to="/workout">Workout</Link></li> */}
+                        {/* <li><Link className="hover:text-amber-200" to="/heatmap">Heatmap</Link></li> */}
                         {/* <li><Link className="hover:text-amber-200" to="/notes">Notes</Link></li> */}
-                        <li><Link className="hover:text-amber-200" to="/playground">Playground</Link></li>
-                        <li><Link className="nav-link" to="/calendar">Calendar</Link></li>
+                        {/* <li><Link className="hover:text-amber-200" to="/playground">Playground</Link></li> */}
+                        <li><Link className="hover:text-amber-200" to="/calendar">Workout</Link></li>
                         <li><Link className="hover:text-amber-200" to="/jobs" onClick={() => setIsExpanded(false)}>Jobs</Link></li>
                         <li>More...</li>
-                        <li><button className="hover:text-amber-200" onClick={() => handleLogout()}>Logout</button></li>
-                        <button className="ml-auto mr-0" onClick={toggleTheme}>
+                        <li className="ml-auto mr-0"><button className="hover:text-red-400 " onClick={() => handleLogout()}>Logout</button></li>
+                        {/* <button className="ml-auto mr-0" onClick={toggleTheme}>
                             {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-                        </button>
+                        </button> */}
                     </ul>
 
                     

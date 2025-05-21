@@ -42,6 +42,7 @@ export default function Jobs() {
                 const data = await res.json();
                 console.log(data);
                 setRecords((prev) => [...prev, data.job]);
+                setDisplayRecords((prev) => [...prev, data.job]);
                 setNewApp({ ...newApp, company: "" });
                 console.log("Application added successfully!");
             }
@@ -155,14 +156,14 @@ export default function Jobs() {
         const modifiedRecord = records.find((record) => record._id === id);
         modifiedRecord.status = e.target.value;
         setSelectedRecord(modifiedRecord);
-        const newRecords = records.map((record) => {
-            if (record._id === id) {
-                return { ...record, status: e.target.value };
-            }
-            return record;
-        });
+        // const newRecords = records.map((record) => {
+        //     if (record._id === id) {
+        //         return { ...record, status: e.target.value };
+        //     }W
+        //     return record;
+        // });
         // setRecords(newRecords);
-        setDisplayRecords(newRecords);
+        // setDisplayRecords(newRecords);
     }
     const handleSort = () => {
         if (filter.sortBydate === "asc") {

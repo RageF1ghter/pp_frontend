@@ -212,7 +212,7 @@ const Recording = () => {
 
             <div>
                 <p>Already Finished: </p>
-
+                
             </div>
         </div>
 

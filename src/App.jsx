@@ -2,13 +2,12 @@
 import Navbar from './components/public/navbar'
 import Home from './components/pages/home/home'
 import Spend from './components/pages/spend/spend'
-import Workout from './components/pages/workout/workout'
 import Login from './components/pages/login/login'
-import Heatmap from './components/pages/heatmap/heatmap'
-import Sensor from './components/pages/sensor/sensor'
-import Notes from './components/pages/notes/notes'
+// import Heatmap from './components/pages/heatmap/heatmap'
+// import Sensor from './components/pages/sensor/sensor'
+// import Notes from './components/pages/notes/notes'
 // import Message from './components/pages/message/message'
-import Playground from './components/pages/playground/playground'
+// import Playground from './components/pages/playground/playground'
 import Calendar from './components/pages/calendar/calendar'
 import Recording from './components/pages/calendar/recording'
 import Details from './components/pages/calendar/details'
@@ -16,7 +15,7 @@ import Jobs from './components/pages/jobs/jobs'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import {jwtDecode} from 'jwt-decode';
 import { login } from './redux/authSlice';
 
@@ -50,12 +49,12 @@ function App() {
             <Routes>
               <Route path="/home/:username" element={<Home />} />
               <Route path="/spend" element={<Spend />} />
-              <Route path="/workout" element={<Workout />} />
-              <Route path="/heatmap" element={<Heatmap />}></Route>
+              {/* <Route path="/workout" element={<Workout />} /> */}
+              {/* <Route path="/heatmap" element={<Heatmap />}></Route> */}
               {/* <Route path="/sensor" element={<Sensor />}></Route> */}
               {/* <Route path="/notes" element={<Notes />}></Route> */}
               {/* <Route path="/message" element={<Message />}></Route> */}
-              <Route path="/playground/*" element={<Playground />}></Route>
+              {/* <Route path="/playground/*" element={<Playground />}></Route> */}
               <Route path="/calendar" element={<Calendar />}></Route>
               <Route path='/recording' element={<Recording />}></Route>
               <Route path='/details/*' element={<Details />}></Route>

@@ -237,7 +237,7 @@ const Calendar = () => {
  
     return (
         <div>
-            <div className="flex flex-col p-1">
+            <div className="flex flex-col p-1 m-5 max-w-4xl mx-auto bg-white rounded-lg shadow-xl">
                 <h1 className="text-2xl font-extrabold">{monthsOfYear[currentMonth]}</h1>
 
                 <div className="grid grid-cols-7 text-center font-bold">
