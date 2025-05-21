@@ -10,7 +10,7 @@ const Recording = () => {
     const [selectedExercise, setSelectedExercise] = useState('');
     const [weight, setWeight] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [replication, setReplication] = useState(0);
+    const [repetition, setReplication] = useState(0);
     const [coolingTime, setCoolingTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [finishedSets, setFinishedSets] = useState([]);
@@ -96,7 +96,7 @@ const Recording = () => {
                     "exercise": selectedExercise,
                     "duration": duration,
                     "weight": weight,
-                    "replication": replication
+                    "repetition": repetition
                 }
                 setFinishedSets((prevSets) => [...prevSets, newRecord]);
 
@@ -212,7 +212,7 @@ const Recording = () => {
                         <label className="font-semibold">Repetitions</label>
                         <input
                             type="number"
-                            value={replication}
+                            value={repetition}
                             onChange={(e) => setReplication(parseInt(e.target.value))}
                             className="w-full mt-1 p-2 bg-teal-100 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
                         />
@@ -251,7 +251,7 @@ const Recording = () => {
                                     <p><span className="font-medium">Portion:</span> {set.portion}</p>
                                     <p><span className="font-medium">Exercise:</span> {set.exercise}</p>
                                     <p><span className="font-medium">Weight:</span> {set.weight} lbs</p>
-                                    <p><span className="font-medium">Reps:</span> {set.replication}</p>
+                                    <p><span className="font-medium">Reps:</span> {set.repetition}</p>
                                 </li>
                             ))}
                         </ul>

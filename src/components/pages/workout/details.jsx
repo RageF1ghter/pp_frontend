@@ -36,9 +36,9 @@ const Details = () => {
 
     const analyzeDetails = () => {
         const totalWeight = details.reduce((acc, detail) => acc + detail.weight, 0);
-        const totalWorkoutTime = Math.floor(details.reduce((acc, detail) => acc + detail.duration, 0) / 60);
+        const totalWorkoutTime = Math.ceil(details.reduce((acc, detail) => acc + detail.duration, 0) / 60);
         // console.log(details.endTime, details.startTime);
-        const totalTime = Math.floor((new Date(record.endTime) - new Date(record.startTime)) / 1000 / 60);
+        const totalTime = Math.ceil((new Date(record.endTime) - new Date(record.startTime)) / 1000 / 60);
         const trainingPercentage = (totalWorkoutTime / totalTime) * 100;
         setSummary({
             totalWeight,
@@ -63,7 +63,7 @@ const Details = () => {
             // Aggregate total weight per exercise
             const data = d3.rollups(
                 details,
-                v => d3.sum(v, d => d.weight * d.replication),
+                v => d3.sum(v, d => d.weight * d.repetition),
                 d => d.exercise
             ).map(([exercise, total]) => ({ exercise, total }));
 
@@ -152,7 +152,7 @@ const Details = () => {
                         <th className="border border-gray-300 px-4 py-2">Portion</th>
                         <th className="border border-gray-300 px-4 py-2">Exercise</th>
                         <th className="border border-gray-300 px-4 py-2">Weight</th>
-                        <th className="border border-gray-300 px-4 py-2">Replication</th>
+                        <th className="border border-gray-300 px-4 py-2">Repetition</th>
                         <th className="border border-gray-300 px-4 py-2">Duration</th>
                         <th className="border border-gray-300 px-4 py-2">Action</th>
                     </tr>
@@ -166,7 +166,7 @@ const Details = () => {
                                     <td className="px-4 py-2"><input type="text" className="border px-2" value={editForm.portion} onChange={e => setEditForm({ ...editForm, portion: e.target.value })} /></td>
                                     <td className="px-4 py-2"><input type="text" className="border px-2" value={editForm.exercise} onChange={e => setEditForm({ ...editForm, exercise: e.target.value })} /></td>
                                     <td className="px-4 py-2"><input type="number" className="border px-2" value={editForm.weight} onChange={e => setEditForm({ ...editForm, weight: e.target.value })} /></td>
-                                    <td className="px-4 py-2"><input type="number" className="border px-2" value={editForm.replication} onChange={e => setEditForm({ ...editForm, replication: e.target.value })} /></td>
+                                    <td className="px-4 py-2"><input type="number" className="border px-2" value={editForm.repetition} onChange={e => setEditForm({ ...editForm, repetition: e.target.value })} /></td>
                                     <td className="px-4 py-2"><input type="number" className="border px-2" value={editForm.duration} onChange={e => setEditForm({ ...editForm, duration: e.target.value })} /></td>
                                     <td className="px-4 py-2">
                                         <button
@@ -184,7 +184,7 @@ const Details = () => {
                                     <td className="px-4 py-2">{detail.portion}</td>
                                     <td className="px-4 py-2">{detail.exercise}</td>
                                     <td className="px-4 py-2">{detail.weight}</td>
-                                    <td className="px-4 py-2">{detail.replication}</td>
+                                    <td className="px-4 py-2">{detail.repetition}</td>
                                     <td className="px-4 py-2">{detail.duration}</td>
                                     <td className="px-4 py-2">
                                         <button
@@ -209,7 +209,7 @@ const Details = () => {
                         🕒 Total Workout Time: <span className="font-bold text-blue-600">{summary.totalTime} mins</span>
                     </h2>
                     <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                        🏋️ Total Weight: <span className="font-bold text-red-500">{summary.totalWeight} kg</span>
+                        🏋️ Total Weight: <span className="font-bold text-red-500">{summary.totalWeight} lb</span>
                     </h2>
                     <h2 className="text-lg font-semibold text-gray-700 mb-2">
                         💪 Active Workout Time: <span className="font-bold text-green-600">{summary.totalWorkoutTime} mins</span>
