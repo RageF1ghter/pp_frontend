@@ -25,6 +25,13 @@ function Home() {
     <>
       <h1>This is the homepage</h1>
       <h2>Good {time}, {username}</h2>
+      <p className="text-sm md:text-base lg:text-xl">
+        Responsive text
+      </p>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="w-full md:w-1/2 bg-red-200">Left</div>
+        <div className="w-full md:w-1/2 bg-blue-200">Right</div>
+      </div>
     </>
   )
 }

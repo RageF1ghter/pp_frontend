@@ -15,10 +15,30 @@ export default function Jobs() {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [filter, setFilter] = useState({
         status: "applied",
-        sortBydate: "asc",
+        sortBydate: "desc",
         company: ""
     })
+
+    const [summary, setSummary] = useState({
+        applied: 0,
+        rejected: 0,
+        inProgress: 0
+    });
     // const [debouncedCompany, setDebouncedCompany] = useState("");
+
+
+    // responsive design
+    const [windowSize, setWindowSize] = useState(window.innerWidth);
+    const handleResize = () => {
+        setWindowSize(window.innerWidth);
+        // console.log(width);
+    }
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [])
 
 
     // CURD operations
@@ -64,7 +84,7 @@ export default function Jobs() {
 
             if (res.ok) {
                 const data = await res.json();
-                console.log(data);
+                data.reverse();
                 setRecords(data);
                 setDisplayRecords(data);
             }
@@ -121,6 +141,7 @@ export default function Jobs() {
                 setRecords(updatedRecords);
                 setDisplayRecords(updatedRecords);
                 console.log("Application updated successfully!");
+                setFilter({ ...filter, company: '' });
             }
         } catch (error) {
             console.error("Error updating application:", error);
@@ -204,78 +225,139 @@ export default function Jobs() {
     useEffect(() => {
         const filteredRecords = records.filter((record) => record.status === filter.status);
         setDisplayRecords(filteredRecords);
-    },[filter.status]);
+    }, [filter.status]);
 
 
     useEffect(() => {
         fetchRecords();
     }, []);
 
+    useEffect(() => {
+        const appliedCount = records.filter((record) => record.status === "applied").length;
+        const rejectedCount = records.filter((record) => record.status === "rejected").length;
+        const inProgressCount = records.filter((record) => record.status === "in progress").length;
+
+        setSummary({
+            applied: appliedCount,
+            rejected: rejectedCount,
+            inProgress: inProgressCount
+        });
+    }, [records]);
+
 
     let lastDate = new Date().toLocaleDateString();
     let toggleColor = false;
     return (
         <div className="flex flex-col gap-5">
-            <form onSubmit={handleAdd} className="flex flex-row gap-2 justify-center">
-                <p>Company</p>
-                <input type="text" value={newApp.company} onChange={(e) => (setNewApp({ ...newApp, company: e.target.value }))}
-                    className="border-2 border-black"
-                />
-                <p>Date</p>
-                <input type="date" value={newApp.dateString.split('T')[0]} onChange={(e) => (setNewApp({ ...newApp, dateString: e.target.value }))}
-                    className="border-2 border-black"
-                />
-                <p>status</p>
-                <select
-                    value={newApp.status} onChange={(e) => setNewApp({ ...newApp, status: e.target.value })}
-                    className="border-2 border-black">
-                    <option value="applied">APPLIED</option>
-                    <option value="rejected">REJECT</option>
-                    <option value="in progress">IN PROGRESS</option>
-                </select>
-                <button type="submit" className="bg-green-400 px-2 py-1">ADD</button>
-            </form>
 
-            {/* Filters */}
-            <div className="flex flex-row gap-10 justify-center">
-                <select value={filter.status} onChange={(e) => setFilter({ ...filter, status: e.target.value })} className="border-2 border-black">
-                    <option value="applied">APPLIED</option>
-                    <option value="rejected">REJECT</option>
-                    <option value="in progress">IN PROGRESS</option>
-                </select>
-                
-                {filter.sortBydate !== "asc" ?
-                    <button onClick={() => handleSort()} className="bg-gray-300 p-2 rounded-2xl">New to Old</button>
-                    :
-                    <button onClick={() => handleSort()} className="bg-gray-300 p-2 rounded-2xl">Old to New</button>
-                }
-                <div className="flex flex-row gap-2 items-center">
-                    <p>Search by Company:</p>
-                    <input type="text" className="border-2" value={filter.company} onChange={(e) => setFilter({ ...filter, company: e.target.value })} />
+            {/* Header Section */}
+            <div className="flex flex-col gap-2">
+
+                {/* Add Section */}
+                <form
+                    onSubmit={handleAdd}
+                    className="flex flex-row gap-5 p-2"
+                >
+                    <label className="font-semibold">Company: </label>
+                    <input
+                        type="text"
+                        value={newApp.company}
+                        onChange={(e) => setNewApp({ ...newApp, company: e.target.value })}
+                        className="border-1 border-black p-0.5 rounded"
+                    />
+
+                    <label className="font-semibold">Date</label>
+                    <input
+                        type="date"
+                        value={newApp.dateString.split('T')[0]}
+                        onChange={(e) => setNewApp({ ...newApp, dateString: e.target.value })}
+                        className="border-1 border-black p-0.5 rounded"
+                    />
+
+                    <label className="font-semibold">Status</label>
+                    <select
+                        value={newApp.status}
+                        onChange={(e) => setNewApp({ ...newApp, status: e.target.value })}
+                        className="border-1 border-black p-0.5 rounded"
+                    >
+                        <option value="applied">APPLIED</option>
+                        <option value="rejected">REJECT</option>
+                        <option value="in progress">IN PROGRESS</option>
+                    </select>
+
+                    <button type="submit" className="bg-green-500/80 text-white px-1 rounded hover:bg-green-600">
+                        ADD
+                    </button>
+                </form>
+
+                {/* Filters Section */}
+                <div className="flex flex-row gap-5 p-2">
+
+                    <label className="font-semibold">Filter by Status:</label>
+                    <select
+                        value={filter.status}
+                        onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+                        className="border-1 border-black p-0.5 rounded"
+                    >
+                        <option value="applied">APPLIED</option>
+                        <option value="rejected">REJECT</option>
+                        <option value="in progress">IN PROGRESS</option>
+                    </select>
+
+                    
+                    <p className="border-1"></p>
+
+                    <button onClick={handleSort} className="border-1 border-black p-0.5 rounded">
+                        {filter.sortBydate === "asc" ? "Old to New" : "New to Old"}
+                    </button>
+
+                    <p className="border-1"></p>
+
+                    
+                    <label className="font-semibold">Search by Company: </label>
+                    <input
+                        type="text"
+                        value={filter.company}
+                        onChange={(e) => setFilter({ ...filter, company: e.target.value })}
+                        className="border-1 border-black p-0.5 rounded w-5xs"
+                    />
+                    
+                    <p className="border-1 shadow-gray-300 shadow-xl"></p>
+
+                    <button onClick={() => setDisplayRecords(records)} className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600">
+                        Reset Filter
+                    </button>
                 </div>
 
-                <button className="bg-green-300 p-2 rounded-2xl" onClick={() => setDisplayRecords(records)}>Reset Filter</button>
+                {/* summary Section */}
+                <div className="px-2">
+                    <p className="font-semibold">Applied: {summary.applied}, Reject: {summary.rejected}, In Progress: {summary.inProgress}</p>
+                </div>
 
             </div>
 
+
+
             {/* Table */}
-            <div className="flex justify-center">
-                <table className="border-2 border-black border-collapse w-2/3 mb-5">
-                    <thead>
+            <div className="flex">
+                <table className="table-auto border-2 border-gray-300 border-separate border-spacing-0.5
+                 rounded-xl py-1 mb-5 shadow-2xl shadow-gray-600 
+                 w-7xl">
+                    <thead >
                         <tr className="border-2 border-black divide-x-2">
                             <td className="px-5 py-0.5">Company</td>
                             <td className="px-5 py-0.5">Date</td>
                             <td className="px-5 py-0.5">Status</td>
-                            <td className="px-5 py-0.5">Notes</td>
+                            {/* <td className="px-5 py-0.5">Notes</td> */}
                             <td className="px-5 py-0.5">Action</td>
                         </tr>
 
                     </thead>
-                    
+
                     <tbody>
                         {displayRecords.length > 0 && displayRecords.map((record) => {
                             const currentDate = new Date(record.date).toLocaleDateString();
-                            if(currentDate !== lastDate) {
+                            if (currentDate !== lastDate) {
                                 toggleColor = !toggleColor;
                                 lastDate = currentDate;
                             }
@@ -284,20 +366,20 @@ export default function Jobs() {
                                 <tr key={record._id} className={`border-2 border-black divide-x-2
                                     ${toggleColorClass}
                                 `}>
-                                    <td className="px-5 py-0.5">{record.company}</td>
-                                    <td className="px-5 py-0.5">{new Date(record.date).toLocaleDateString()}</td>
-                                    <td className="px-5 py-0.5">
+                                    <td className="px-5 py-1">{record.company}</td>
+                                    <td className="px-5 py-1">{new Date(record.date).toLocaleDateString()}</td>
+                                    <td className="px-5 py-1">
                                         <select value={record.status} onChange={(e) => handleStatusChange(e, record._id)}>
                                             <option value="applied">APPLIED</option>
                                             <option value="rejected">REJECT</option>
                                             <option value="in progress">IN PROGRESS</option>
                                         </select>
                                     </td>
-                                    <td className="px-5 py-0.5">{record.notes}</td>
-                                    <td className="px-5 py-0.5 flex flex-row gap-2">
-                                        <button className="bg-green-400 rounded-2xl text-white p-1" onClick={() => handleUpdate()}>Update</button>
-                                        <button className="bg-amber-400 rounded-2xl text-white p-1" onClick={() => handleCancel()}>Cancel</button>
-                                        <button className="bg-red-600 rounded-2xl text-white p-1" onClick={() => handleDelete(record._id)}>Delete</button>
+                                    {/* <td className="px-5 py-1">{record.notes}</td> */}
+                                    <td className="px-5 py-1 flex flex-row gap-2">
+                                        <button className="bg-green-400 rounded-xl text-white p-1" onClick={() => handleUpdate()}>Update</button>
+                                        <button className="bg-amber-400 rounded-xl text-white p-1" onClick={() => handleCancel()}>Cancel</button>
+                                        <button className="bg-red-600 rounded-xl text-white p-1" onClick={() => handleDelete(record._id)}>Delete</button>
                                     </td>
                                 </tr>
                             )
