@@ -248,7 +248,7 @@ export default function Jobs() {
     let lastDate = new Date().toLocaleDateString();
     let toggleColor = false;
     return (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 px-5">
 
             {/* Header Section */}
             <div className="flex flex-col gap-2">
@@ -339,10 +339,10 @@ export default function Jobs() {
 
 
             {/* Table */}
-            <div className="flex">
+            <div className="p-2">
                 <table className="table-auto border-2 border-gray-300 border-separate border-spacing-0.5
                  rounded-xl py-1 mb-5 shadow-2xl shadow-gray-600 
-                 w-7xl">
+                 w-3xl">
                     <thead >
                         <tr className="border-2 border-black divide-x-2">
                             <td className="px-5 py-0.5">Company</td>
@@ -366,17 +366,17 @@ export default function Jobs() {
                                 <tr key={record._id} className={`border-2 border-black divide-x-2
                                     ${toggleColorClass}
                                 `}>
-                                    <td className="px-5 py-1">{record.company}</td>
-                                    <td className="px-5 py-1">{new Date(record.date).toLocaleDateString()}</td>
-                                    <td className="px-5 py-1">
+                                    <td className="px-1 py-1">{record.company}</td>
+                                    <td className="px-1 py-1">{new Date(record.date).toLocaleDateString()}</td>
+                                    <td className="px-1 py-1">
                                         <select value={record.status} onChange={(e) => handleStatusChange(e, record._id)}>
                                             <option value="applied">APPLIED</option>
                                             <option value="rejected">REJECT</option>
                                             <option value="in progress">IN PROGRESS</option>
                                         </select>
                                     </td>
-                                    {/* <td className="px-5 py-1">{record.notes}</td> */}
-                                    <td className="px-5 py-1 flex flex-row gap-2">
+                                    {/* <td className="px-1 py-1">{record.notes}</td> */}
+                                    <td className="px-1 py-1 flex flex-row gap-2">
                                         <button className="bg-green-400 rounded-xl text-white p-1" onClick={() => handleUpdate()}>Update</button>
                                         <button className="bg-amber-400 rounded-xl text-white p-1" onClick={() => handleCancel()}>Cancel</button>
                                         <button className="bg-red-600 rounded-xl text-white p-1" onClick={() => handleDelete(record._id)}>Delete</button>
