@@ -1,3 +1,4 @@
+import { use } from "react";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
@@ -18,13 +19,15 @@ export default function Jobs() {
         sortBydate: "desc",
         company: ""
     })
-
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(15);
     const [summary, setSummary] = useState({
-        applied: 0,
-        rejected: 0,
-        inProgress: 0
+        totalJobs: 0,
+        appliedJobs: 0,
+        interviewedJobs: 0,
+        rejectedJobs: 0
     });
-    // const [debouncedCompany, setDebouncedCompany] = useState("");
+    
 
 
     // responsive design
@@ -52,7 +55,7 @@ export default function Jobs() {
                 },
                 body: JSON.stringify({
                     userId: userId,
-                    company: newApp.company,
+                    company: (newApp.company).trim(),
                     dateString: newApp.dateString,
                     status: newApp.status,
                     notes: newApp.notes
@@ -61,8 +64,8 @@ export default function Jobs() {
             if (res.ok) {
                 const data = await res.json();
                 console.log(data);
-                setRecords((prev) => [...prev, data.job]);
-                setDisplayRecords((prev) => [...prev, data.job]);
+                setRecords((prev) => [data.job, ...prev]);
+                setDisplayRecords((prev) => [data.job, ...prev]);
                 setNewApp({ ...newApp, company: "" });
                 console.log("Application added successfully!");
             }
@@ -72,9 +75,34 @@ export default function Jobs() {
         }
     };
 
+    const fetchSummary = async () => {
+        try{
+            const res = await fetch(`${URL}/summary?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (res.ok) {
+                const {totalJobs,
+                    appliedJobs,
+                    interviewedJobs,
+                    rejectedJobs} = await res.json();
+                setSummary({
+                    totalJobs,
+                    appliedJobs,
+                    interviewedJobs,
+                    rejectedJobs
+                });
+            }
+        } catch (error){
+            console.error("Error fetching summary:", error);
+        }
+    }
+
     const fetchRecords = async () => {
         try {
-            const res = await fetch(`${URL}?userId=67a28b8829f3ba8beda0e216`, {
+            const res = await fetch(`${URL}/paged?page=${page}&limit=${limit}&userId=${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -84,7 +112,7 @@ export default function Jobs() {
 
             if (res.ok) {
                 const data = await res.json();
-                data.reverse();
+                console.log("Fetched records:", data);
                 setRecords(data);
                 setDisplayRecords(data);
             }
@@ -93,7 +121,7 @@ export default function Jobs() {
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (record) => {
         try {
             const res = await fetch(`${URL}/delete`, {
                 method: 'DELETE',
@@ -101,14 +129,16 @@ export default function Jobs() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    _id: id
+                    _id: record._id,
                 })
             });
             if (res.ok) {
                 const restRecords = records.filter((record) => record._id !== id);
                 setRecords(restRecords);
                 setDisplayRecords(restRecords);
-                console.log("Application deleted successfully!");
+                await fetchSummary();
+                await fetchRecords();
+                alert("Application deleted successfully!");
             }
         } catch (error) {
             console.error("Error deleting application:", error);
@@ -142,6 +172,7 @@ export default function Jobs() {
                 setDisplayRecords(updatedRecords);
                 console.log("Application updated successfully!");
                 setFilter({ ...filter, company: '' });
+                await fetchSummary();
             }
         } catch (error) {
             console.error("Error updating application:", error);
@@ -200,10 +231,25 @@ export default function Jobs() {
         }
 
     }
-    const handleSearch = (name) => {
-        const filteredRercords = records.filter((record) => record.company.toLowerCase().includes(name.toLowerCase()));
+    const handleSearch = async (name) => {
+        // const filteredRercords = records.filter((record) => record.company.toLowerCase().includes(name.trim().toLowerCase()));
         // setRecords(filteredRercords);
-        setDisplayRecords(filteredRercords);
+        try{
+            const res = await fetch(`${URL}/search?userId=${userId}&company=${name}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (res.ok) {
+                const filteredRercords = await res.json();
+                console.log("Filtered Records:", filteredRercords);
+                setDisplayRecords(filteredRercords);
+            }
+        } catch (error) {
+            console.error("Error searching records:", error);
+        }
+        
     };
 
     // search by company
@@ -214,7 +260,7 @@ export default function Jobs() {
             setDisplayRecords(records);
         } else {
             const timer = setTimeout(() => {
-                handleSearch(filter.company);
+                handleSearch((filter.company).trim());
             }, 500);
             return () => clearTimeout(timer);
         }
@@ -228,21 +274,31 @@ export default function Jobs() {
     }, [filter.status]);
 
 
+    // prev or next page
+    const handlePageClick = async (action) => {
+        console.log("Action:", action);
+
+        const maxPage = Math.ceil(summary.totalJobs / limit);
+
+        if(action === 'prev' && page > 1) {
+            setPage(page - 1);
+        }
+        else if(action === 'next' && page < maxPage) {
+            setPage(page + 1);  
+        }
+        
+
+    }
+
+
     useEffect(() => {
-        fetchRecords();
+        fetchSummary();
     }, []);
 
     useEffect(() => {
-        const appliedCount = records.filter((record) => record.status === "applied").length;
-        const rejectedCount = records.filter((record) => record.status === "rejected").length;
-        const inProgressCount = records.filter((record) => record.status === "in progress").length;
+        fetchRecords();
+    }, [page, limit, userId]);
 
-        setSummary({
-            applied: appliedCount,
-            rejected: rejectedCount,
-            inProgress: inProgressCount
-        });
-    }, [records]);
 
 
     let lastDate = new Date().toLocaleDateString();
@@ -330,19 +386,23 @@ export default function Jobs() {
                 </div>
 
                 {/* summary Section */}
-                <div className="px-2">
-                    <p className="font-semibold">Applied: {summary.applied}, Reject: {summary.rejected}, In Progress: {summary.inProgress}</p>
+                <div className="px-2 flex flex-col gap-2">
+                    <p className="font-semibold">
+                        Total: {summary.totalJobs}, Applied: {summary.appliedJobs}, Reject: {summary.rejectedJobs}, In Progress: {summary.interviewedJobs}
+                    </p>
+                    <p className="font-semibold">
+                        Interview Rate: {(summary.interviewedJobs / summary.appliedJobs * 100).toFixed(2)}%
+                    </p>
                 </div>
 
             </div>
 
-
-
             {/* Table */}
-            <div className="p-2">
+            <div className="flex flex-col px-2 pb-10 gap-5">
                 <table className="table-auto border-2 border-gray-300 border-separate border-spacing-0.5
-                 rounded-xl py-1 mb-5 shadow-2xl shadow-gray-600 
-                 w-3xl">
+                    rounded-xl py-1 mb-5 shadow-2xl shadow-gray-600 
+                    w-3xl"
+                >
                     <thead >
                         <tr className="border-2 border-black divide-x-2">
                             <td className="px-5 py-0.5">Company</td>
@@ -379,13 +439,30 @@ export default function Jobs() {
                                     <td className="px-1 py-1 flex flex-row gap-2">
                                         <button className="bg-green-400 rounded-xl text-white p-1" onClick={() => handleUpdate()}>Update</button>
                                         <button className="bg-amber-400 rounded-xl text-white p-1" onClick={() => handleCancel()}>Cancel</button>
-                                        <button className="bg-red-600 rounded-xl text-white p-1" onClick={() => handleDelete(record._id)}>Delete</button>
+                                        <button className="bg-red-600 rounded-xl text-white p-1" onClick={() => handleDelete(record)}>Delete</button>
                                     </td>
                                 </tr>
                             )
                         })}
                     </tbody>
                 </table>
+
+                <div className="flex flex-row justify-center gap-10">
+                    <button
+                        className="bg-blue-300 text-white px-5 py-2 rounded hover:bg-blue-400"
+                        onClick={() => handlePageClick('prev')}
+                        
+                    >
+                        {'<'}
+                    </button>
+                    <button
+                        className="bg-blue-300 text-white px-5 py-2 rounded hover:bg-blue-400"
+                        onClick={() => handlePageClick('next')}
+                        
+                    >
+                        {'>'}
+                    </button>
+                </div>
             </div>
 
         </div>
