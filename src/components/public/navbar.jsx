@@ -63,7 +63,6 @@ const Navbar = () => {
                                     <li><Button effect="hover:text-amber-200 p-1" dest='/calendar' text="Workout" /></li>
                                     <li><Button effect="hover:text-amber-200 p-1" dest='/jobs' text="Jobs" /></li>
                                     <li><Button effect="hover:text-amber-200 p-1" dest='/heatmap' text="Heatmap" /></li>
-                                    <li><Button effect="hover:text-amber-200 p-1" dest='/notes' text="Notes" /></li>
                                     <li><Button effect="hover:text-amber-200 p-1" dest='/playground' text="Playground" /></li>
                                     <li className="mb-5 p-1">More...</li>
                                     <li><Button effect="hover:text-amber-200 p-1" onClick={handleLogout} text="Logout"/></li>
@@ -86,7 +85,6 @@ const Navbar = () => {
                         <li><Button effect="hover:text-amber-200" dest='/calendar' text="Workout" /></li>
                         <li><Button effect="hover:text-amber-200" dest='/jobs' text="Jobs" /></li>
                         <li><Button effect="hover:text-amber-200" dest='/heatmap' text="Heatmap" /></li>
-                        <li><Button effect="hover:text-amber-200" dest='/notes' text="Notes" /></li>
                         <li><Button effect="hover:text-amber-200" dest='/playground' text="Playground" /></li>
                         <li className="">More...</li>
                         <li className="ml-auto mr-0"><Button effect="hover:text-amber-200 " onClick={handleLogout} text="Logout"/></li>

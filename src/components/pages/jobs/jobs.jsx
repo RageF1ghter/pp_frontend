@@ -304,7 +304,7 @@ export default function Jobs() {
     let lastDate = new Date().toLocaleDateString();
     let toggleColor = false;
     return (
-        <div className="flex flex-col gap-5 px-5">
+        <div className="flex flex-col gap-5 px-5 pb-20">
 
             {/* Header Section */}
             <div className="flex flex-col gap-2">
@@ -341,7 +341,9 @@ export default function Jobs() {
                         <option value="in progress">IN PROGRESS</option>
                     </select>
 
-                    <button type="submit" className="bg-green-500/80 text-white px-1 rounded hover:bg-green-600">
+                    <button type="submit" 
+                    className="bg-green-500/80 text-white px-1 rounded hover:bg-green-600
+                    active:scale-95 transition-transform duration-100">
                         ADD
                     </button>
                 </form>
@@ -437,9 +439,23 @@ export default function Jobs() {
                                     </td>
                                     {/* <td className="px-1 py-1">{record.notes}</td> */}
                                     <td className="px-1 py-1 flex flex-row gap-2">
-                                        <button className="bg-green-400 rounded-xl text-white p-1" onClick={() => handleUpdate()}>Update</button>
-                                        <button className="bg-amber-400 rounded-xl text-white p-1" onClick={() => handleCancel()}>Cancel</button>
-                                        <button className="bg-red-600 rounded-xl text-white p-1" onClick={() => handleDelete(record)}>Delete</button>
+                                        <button 
+                                            className="bg-green-400 rounded-xl font-mono text-white px-2 py-1
+                                            active:scale-95 transition-transform duration-100" 
+                                            onClick={() => handleUpdate()}
+                                        >
+                                            Update
+                                        </button>
+                                        <button 
+                                            className="bg-amber-400 rounded-xl font-mono text-white px-2 py-1"
+                                            onClick={() => handleCancel()}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button className="bg-red-600 rounded-xl font-mono text-white px-2 py-1"
+                                            onClick={() => handleDelete(record)}>
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             )
@@ -464,7 +480,7 @@ export default function Jobs() {
                     </button>
                 </div>
             </div>
-
+            
         </div>
     )
 }
