@@ -23,7 +23,7 @@ function Home() {
   }, []);
   return (
     <>
-      <h1>test</h1>
+      <h1>deleted vercel, test</h1>
       <h1>This is the homepage</h1>
       <h2>Good {time}, {username}</h2>
       <p className="text-sm md:text-base lg:text-xl">
