@@ -172,7 +172,8 @@ export default function Jobs() {
                 setDisplayRecords(updatedRecords);
                 console.log("Application updated successfully!");
                 setFilter({ ...filter, company: '' });
-                await fetchSummary();
+                fetchSummary();
+                fetchRecords();
             }
         } catch (error) {
             console.error("Error updating application:", error);
@@ -244,6 +245,7 @@ export default function Jobs() {
             if (res.ok) {
                 const filteredRercords = await res.json();
                 console.log("Filtered Records:", filteredRercords);
+                setRecords(filteredRercords);
                 setDisplayRecords(filteredRercords);
             }
         } catch (error) {
@@ -382,7 +384,7 @@ export default function Jobs() {
                     
                     <p className="border-1 shadow-gray-300 shadow-xl"></p>
 
-                    <button onClick={() => setDisplayRecords(records)} className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600">
+                    <button onClick={() => {setFilter(prev => ({...prev, company: ''})), fetchRecords()}} className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600">
                         Reset Filter
                     </button>
                 </div>
