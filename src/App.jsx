@@ -13,13 +13,13 @@ import Jobs from './components/pages/jobs/jobs'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import {jwtDecode} from 'jwt-decode';
 import { login } from './redux/authSlice';
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.status);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,47 +32,41 @@ function App() {
         userId: decodedJwt.id,
         username: decodedJwt.username,
         email: decodedJwt.email,
-        status: true
       }));
+      setIsLoading(false);
     }
-  },[])
-  // const username = useSelector((state) => state.auth.username);
+    
+  },[]);
+
+
+  if (isLoading) return <div>Loading...</div>; // Show a loading screen temporarily
 
   return (
     <Router>
       {isLoggedIn ? (
         <div className="flex flex-col gap-20">
-          <Navbar/>
-          <div>
-            <Routes>
-              <Route path="/home/:username" element={<Home />} />
-              <Route path="/spend" element={<Spend />} />
-              <Route path="/heatmap" element={<Heatmap />}></Route>
-              <Route path="/sensor" element={<Sensor />}></Route>
-              <Route path="/playground/*" element={<Playground />}></Route>
-              <Route path="/calendar" element={<Calendar />}></Route>
-              <Route path='/recording' element={<Recording />}></Route>
-              <Route path='/details/*' element={<Details />}></Route>
-              <Route path='/login' element={<Login />}></Route>
-              <Route path='/jobs' element={<Jobs />}></Route>
-              <Route path='*' element={<Login />}></Route>
-            </Routes>
-          </div>
-          
-        </div>
-      ) : (
-        <div>
+          <Navbar />
           <Routes>
-            <Route path='/login' element={<Login />}></Route>
-            <Route path='*' element={<Login />}></Route>
+            <Route path="/home/:username" element={<Home />} />
+            <Route path="/spend" element={<Spend />} />
+            <Route path="/heatmap" element={<Heatmap />} />
+            <Route path="/sensor" element={<Sensor />} />
+            <Route path="/playground/*" element={<Playground />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path='/recording' element={<Recording />} />
+            <Route path='/details/*' element={<Details />} />
+            <Route path='/jobs' element={<Jobs />} />
+            <Route path='*' element={<Home />} />
           </Routes>
         </div>
-
+      ) : (
+        <Routes>
+          <Route path='/login' element={<Login />} />
+          <Route path='*' element={<Login />} />
+        </Routes>
       )}
-
-
     </Router>
-  )
+  );
 }
 
 export default App;
