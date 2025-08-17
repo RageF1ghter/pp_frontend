@@ -23,23 +23,24 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
+    const jwt = localStorage.getItem("jwt");
     if (jwt) {
       const decodedJwt = jwtDecode(jwt);
-      console.log('Decoded JWT:', decodedJwt);
+      console.log("Decoded JWT:", decodedJwt);
       // updateState(decodedJwt)
-      dispatch(login({
-        userId: decodedJwt.id,
-        username: decodedJwt.username,
-        email: decodedJwt.email,
-      }));
+      dispatch(
+        login({
+          userId: decodedJwt.id,
+          username: decodedJwt.username,
+          email: decodedJwt.email,
+        })
+      );
       setIsLoading(false);
     }
-    
-  },[]);
+  }, []);
 
 
-  if (isLoading) return <div>Loading...</div>; // Show a loading screen temporarily
+  // if (isLoading) return <div>Loading...</div>; // Show a loading screen temporarily
 
   return (
     <Router>
