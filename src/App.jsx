@@ -4,7 +4,6 @@ import Home from "./components/pages/home/home";
 import Spend from "./components/pages/spend/spend";
 import Login from "./components/pages/login/login";
 import Heatmap from "./components/pages/heatmap/heatmap";
-import Sensor from "./components/pages/sensor/sensor";
 import Playground from "./components/pages/playground/playground";
 import Calendar from "./components/pages/workout/calendar";
 import Recording from "./components/pages/workout/recording";
@@ -56,7 +55,6 @@ function App() {
             <Route path="/home/:username" element={<Home />} />
             <Route path="/spend" element={<Spend />} />
             <Route path="/heatmap" element={<Heatmap />} />
-            <Route path="/sensor" element={<Sensor />} />
             <Route path="/playground/*" element={<Playground />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/recording" element={<Recording />} />
