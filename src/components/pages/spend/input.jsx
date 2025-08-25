@@ -51,14 +51,8 @@ export default function InputCard({ userId, refresh }) {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [addSuccess, setAddSuccess] = useState(0); // 0: for haven't add yet, 1 for success, 2 for failed
-
+  const prefix = "https://omnic.space/api/spend";
   const handleSubmit = async () => {
-    // if (date === "") {
-    //   setDate(Date().toLocaleString());
-    // } else {
-    //   console.log(date);
-    //   setDate(Date().toLocaleString());
-    // }
     const amountFloat = parseFloat(amount);
     if (category === "" || amountFloat <= 0.0) {
       setAddSuccess(2);
@@ -74,7 +68,7 @@ export default function InputCard({ userId, refresh }) {
       // console.log(spendingObject);
 
       try {
-        const res = await fetch("http://3.89.31.205:5000/spend/add", {
+        const res = await fetch(`${prefix}/add`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

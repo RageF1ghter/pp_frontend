@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/table";
 
 export default function DetailsTable({ records }) {
-  const URL = "3.89.31.205";
+  // const URL = "3.89.31.205";
+  const prefix = "https://omnic.space/api/spend";
 
   const [spends, setSpends] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -95,7 +96,7 @@ export default function DetailsTable({ records }) {
       const spend = spends.find((spend) => spend._id === id);
       const { isEditing, ...newSpend } = spend;
       try {
-        const res = await fetch(`http://${URL}:5000/spend/update`, {
+        const res = await fetch(`${prefix}/update`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -133,7 +134,7 @@ export default function DetailsTable({ records }) {
       return; // User canceled the deletion
     }
     try {
-      const res = await fetch(`http://${URL}:5000/spend/delete?${id}`, {
+      const res = await fetch(`${prefix}/delete?${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -201,125 +202,6 @@ export default function DetailsTable({ records }) {
             </TableRow>
           </TableFooter>
         </Table>
-
-        <table className="table-auto border-collapse border border-emerald-600 w-full m-2 p-2 shadow-md rounded-lg text-lg">
-          {/* Table Header */}
-          <thead className="border border-emerald-600 bg-emerald-500 text-white text-xl">
-            <tr className="divide-x divide-emerald-600">
-              <th className="px-5 py-3">Category</th>
-              <th className="px-5 py-3">Amount</th>
-              <th className="px-5 py-3">Date</th>
-              <th className="px-5 py-3">Details</th>
-              <th className="px-5 py-3">Action</th>
-            </tr>
-          </thead>
-
-          {/* Table Body */}
-          <tbody className="divide-y divide-emerald-600">
-            {spends.map((spend, index) => (
-              <tr
-                key={spend._id}
-                className={`divide-x divide-emerald-600 ${
-                  index % 2 === 0 ? "bg-amber-50" : "bg-white"
-                }`}
-              >
-                {spend.isEditing ? (
-                  <td className="px-5 py-3">
-                    <input
-                      type="text"
-                      value={spend.category}
-                      onChange={(e) =>
-                        handleChanges(spend._id, "category", e.target.value)
-                      }
-                    />
-                  </td>
-                ) : (
-                  <td className="px-5 py-3">{spend.category}</td>
-                )}
-
-                {spend.isEditing ? (
-                  <td className="px-5 py-3">
-                    <input
-                      type="text"
-                      value={spend.amount}
-                      onChange={(e) =>
-                        handleChanges(spend._id, "amount", e.target.value)
-                      }
-                    />
-                  </td>
-                ) : (
-                  <td className="px-5 py-3">{spend.amount}</td>
-                )}
-
-                {spend.isEditing ? (
-                  <td className="px-5 py-3">
-                    <input
-                      type="date"
-                      value={spend.date}
-                      onChange={(e) =>
-                        handleChanges(spend._id, "date", e.target.value)
-                      }
-                    />
-                  </td>
-                ) : (
-                  <td className="px-5 py-3">{spend.date.split("T")[0]}</td>
-                )}
-
-                {spend.isEditing ? (
-                  <td className="px-5 py-3">
-                    <input
-                      type="text"
-                      value={spend.details}
-                      onChange={(e) =>
-                        handleChanges(spend._id, "details", e.target.value)
-                      }
-                    />
-                  </td>
-                ) : (
-                  <td className="px-5 py-3">{spend.details}</td>
-                )}
-
-                <td className="px-5 py-3">
-                  {spend.isEditing ? (
-                    <div>
-                      <button
-                        onClick={() =>
-                          handleEdit({ decision: true, id: spend._id })
-                        }
-                        className="bg-sky-500 text-white px-4 py-2 rounded-md hover:bg-sky-600 transition m-0.5"
-                      >
-                        Finish
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleEdit({ decision: false, id: spend._id })
-                        }
-                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition m-0.5"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => handleDelete(spend._id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition m-0.5"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => toggleEdit(spend._id)}
-                      className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-emerald-600 transition"
-                    >
-                      Edit
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <p className="text-2xl text-pink-500 font-bold">Total: {total}</p>
       </div>
     </>
   );

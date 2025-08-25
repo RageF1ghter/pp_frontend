@@ -49,7 +49,7 @@ function App() {
   return (
     <Router>
       {isLoggedIn ? (
-        <div className="flex flex-col gap-20">
+        <div className="flex flex-col gap-10 pt-14">
           <Navbar />
           <Routes>
             <Route path="/home/:username" element={<Home />} />

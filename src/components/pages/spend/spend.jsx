@@ -6,7 +6,8 @@ import InputCard from "./input";
 const USER_ID = "67a28b8829f3ba8beda0e216";
 
 const Spend = () => {
-  const URL = "3.89.31.205";
+  // const URL = "3.89.31.205";
+  const prefix = "https://omnic.space/api/spend";
   const [reocrds, setRecords] = useState([]);
 
   const userId = useSelector((state) => state.auth.userId) || USER_ID;
@@ -23,7 +24,7 @@ const Spend = () => {
       console.log(startDate, endDate);
 
       const response = await fetch(
-        `http://${URL}:5000/spend?userId=${id}&startDate=${startDate}&endDate=${endDate}`
+        `${prefix}?userId=${id}&startDate=${startDate}&endDate=${endDate}`
       );
       const data = await response.json();
       if (data) {

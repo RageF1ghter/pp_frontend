@@ -17,7 +17,8 @@ const Recording = () => {
   const navigate = useNavigate();
 
   const recordId = localStorage.getItem("recordId");
-  const URL = `http://3.89.31.205:5000/workout`;
+  // const prefix = `http://3.89.31.205:5000/workout`;
+  const prefix = "https://omnic.space/api/workout";
   const userId = useSelector((state) => state.auth.userId);
 
   ///---Selection Logic---///
@@ -96,7 +97,7 @@ const Recording = () => {
         };
         setFinishedSets((prevSets) => [...prevSets, newRecord]);
 
-        const res = await fetch(`${URL}/updaterecord`, {
+        const res = await fetch(`${prefix}/updaterecord`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -136,7 +137,7 @@ const Recording = () => {
         portion: selectedWorkout,
       };
       // const test = 'http://localhost:5000/workout'
-      const res = await fetch(`${URL}/endrecord`, {
+      const res = await fetch(`${prefix}/endrecord`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

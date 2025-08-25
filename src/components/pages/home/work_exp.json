@@ -1,0 +1,45 @@
+{
+  "work_experience": [
+    {
+      "title": "Full Stack Developer",
+      "company": "VationX",
+      "location": "Shanghai, China",
+      "date": "May 2024 – Mar 2025",
+      "responsibilities": [
+        "Built a responsive web platform with React.js for access control, device monitoring, and movement analysis",
+        "Designed interactive heatmaps with D3.js supporting real-time resizing, drag, and custom styling",
+        "Improved indoor positioning accuracy to within 1.5m using Kalman Filtering, RSSI triangulation, and XGBoost",
+        "Developed and optimized RESTful APIs with Node.js/Express for scalable IoT data handling",
+        "Increased IoT reporting efficiency by 80% through Redis-based MAC-to-UUID mapping",
+        "Built Python pipelines with AWS IoT Core, Lambda, and DynamoDB to process and store sensor data"
+      ],
+      "demo": "/heatmap"
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Affekta",
+      "location": "Houston, US",
+      "date": "Jun 2023 – Apr 2024",
+      "responsibilities": [
+        "Built a real-time facial recognition app on Google Glass 2 using Kotlin and FaceNet",
+        "Designed UI overlays for bounding boxes and identity details, improving usability",
+        "Enhanced training pipelines with alignment, normalization, and data augmentation, boosting accuracy by 37%",
+        "Cut storage needs by 99% by saving embeddings instead of raw images",
+        "Developed a React.js + Node.js platform with MongoDB for facial data upload and management"
+      ],
+      "demo": "https://github.com/RageF1ghter/Smart-Glass-AR"
+    },
+    {
+      "title": "Research Assistant",
+      "company": "Arizona State University",
+      "location": "Tempe, US",
+      "date": "May 2022 – May 2023",
+      "responsibilities": [
+        "Developed a system to monitor heart rates and stress levels from Fitbit data, using AWS Lambda + DynamoDB",
+        "Automated Fitbit-to-database data transfer with JavaScript and Fitbit API",
+        "Researched and evaluated ML models (XGBoost, CNN, Random Forest, AdaBoost, KNN) for stress prediction",
+        "Achieved 96% accuracy with XGBoost and 95% with CNN for stress prediction tasks"
+      ]
+    }
+  ]
+}

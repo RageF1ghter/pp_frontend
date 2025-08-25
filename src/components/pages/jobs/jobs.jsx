@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 export default function Jobs() {
-  const URL = `http://3.89.31.205:5000/jobs`;
+  // const prefix = `http://3.89.31.205:5000/jobs`;
+  const prefix = "https://omnic.space/api/jobs";
   const userId = useSelector((state) => state.auth.userId);
   const [records, setRecords] = useState([]);
   const [displayRecords, setDisplayRecords] = useState([]);
@@ -32,7 +33,7 @@ export default function Jobs() {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${URL}/add`, {
+      const res = await fetch(`${prefix}/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -57,7 +58,7 @@ export default function Jobs() {
 
   const fetchSummary = async () => {
     try {
-      const res = await fetch(`${URL}/summary?userId=${userId}`, {
+      const res = await fetch(`${prefix}/summary?userId=${userId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -74,7 +75,7 @@ export default function Jobs() {
   const fetchRecords = async () => {
     try {
       const res = await fetch(
-        `${URL}/paged?page=${page}&limit=${limit}&userId=${userId}`,
+        `${prefix}/paged?page=${page}&limit=${limit}&userId=${userId}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -93,7 +94,7 @@ export default function Jobs() {
 
   const handleDelete = async (record) => {
     try {
-      const res = await fetch(`${URL}/delete`, {
+      const res = await fetch(`${prefix}/delete`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ _id: record._id }),
@@ -110,7 +111,7 @@ export default function Jobs() {
   const handleUpdate = async () => {
     try {
       if (!selectedRecord) return;
-      const res = await fetch(`${URL}/update`, {
+      const res = await fetch(`${prefix}/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -142,9 +143,8 @@ export default function Jobs() {
 
   // ====== Table manipulations (unchanged logic) ======
   const handleStatusChange = (e, id) => {
-    
     const modifiedRecord = displayRecords.find((record) => record._id === id);
-    console.log(id, modifiedRecord)
+    console.log(id, modifiedRecord);
     modifiedRecord.status = e.target.value;
     setSelectedRecord(modifiedRecord);
   };
@@ -152,7 +152,7 @@ export default function Jobs() {
   const handleSearch = async (name) => {
     try {
       const res = await fetch(
-        `${URL}/search?userId=${userId}&company=${name}`,
+        `${prefix}/search?userId=${userId}&company=${name}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -372,7 +372,10 @@ export default function Jobs() {
             <div className="mt-2 text-sm text-slate-600 dark:text-slate-300">
               Interview Rate:{" "}
               <span className="font-semibold">
-                {(summary.interviewedJobs / summary.appliedJobs * 100 || 0).toFixed(2)}%
+                {(
+                  (summary.interviewedJobs / summary.appliedJobs) * 100 || 0
+                ).toFixed(2)}
+                %
               </span>
             </div>
           </div>
@@ -394,13 +397,16 @@ export default function Jobs() {
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {displayRecords.length > 0 &&
                   displayRecords.map((record) => {
-                    const currentDate = new Date(record.date).toLocaleDateString();
+                    const currentDate = new Date(
+                      record.date
+                    ).toLocaleDateString();
                     if (currentDate !== lastDate) {
                       toggleColor = !toggleColor;
                       lastDate = currentDate;
                     }
-                    const zebra =
-                      toggleColor ? "bg-slate-50/50 dark:bg-slate-950/30" : "bg-white/0";
+                    const zebra = toggleColor
+                      ? "bg-slate-50/50 dark:bg-slate-950/30"
+                      : "bg-white/0";
 
                     return (
                       <tr
@@ -424,7 +430,9 @@ export default function Jobs() {
                             </span>
                             <select
                               value={record.status}
-                              onChange={(e) => handleStatusChange(e, record._id)}
+                              onChange={(e) =>
+                                handleStatusChange(e, record._id)
+                              }
                               className="h-8 rounded-md border border-slate-300 bg-white px-2 text-xs shadow-sm outline-none focus:ring-2 focus:ring-slate-400/60 dark:bg-slate-950 dark:border-slate-700"
                             >
                               <option value="applied">APPLIED</option>
