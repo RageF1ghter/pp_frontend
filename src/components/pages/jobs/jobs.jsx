@@ -1,10 +1,9 @@
-import { use } from "react";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import config from "../../config";
 
 export default function Jobs() {
-  // const prefix = `http://3.89.31.205:5000/jobs`;
-  const prefix = "https://omnic.space/api/jobs";
+  const prefix = `${config.prod.API_URL}/jobs`;
   const userId = useSelector((state) => state.auth.userId);
   const [records, setRecords] = useState([]);
   const [displayRecords, setDisplayRecords] = useState([]);

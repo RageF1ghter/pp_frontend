@@ -22,8 +22,7 @@ import { jwtDecode } from "jwt-decode";
 import { login } from "./redux/authSlice";
 
 function App() {
-  const isLoggedIn = useSelector((state) => state.auth.status);
-  const [isLoading, setIsLoading] = useState(true);
+  const role = useSelector((state) => state.auth.role);
   const dispatch = useDispatch();
   // const navigate = useNavigate();
 
@@ -31,7 +30,7 @@ function App() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
       const decodedJwt = jwtDecode(jwt);
-      console.log("Decoded JWT:", decodedJwt);
+      // console.log("Decoded JWT:", decodedJwt);
       // updateState(decodedJwt)
       dispatch(
         login({
@@ -40,35 +39,48 @@ function App() {
           email: decodedJwt.email,
         })
       );
-      setIsLoading(false);
     }
   }, []);
 
-  // if (isLoading) return <div>Loading...</div>; // Show a loading screen temporarily
-
-  return (
-    <Router>
-      {isLoggedIn ? (
-        <div className="flex flex-col gap-10 pt-14">
-          <Navbar />
-          <Routes>
-            <Route path="/home/:username" element={<Home />} />
-            <Route path="/spend" element={<Spend />} />
-            <Route path="/heatmap" element={<Heatmap />} />
-            <Route path="/playground/*" element={<Playground />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/recording" element={<Recording />} />
-            <Route path="/details/*" element={<Details />} />
-            <Route path="/jobs" element={<Jobs />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
-        </div>
-      ) : (
+  const RoleRoutes = () => {
+    if (role === null) {
+      return (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<Login />} />
         </Routes>
-      )}
+      );
+    } else if (role === "guest") {
+      return (
+        <Routes>
+          <Route path="/home/guest" element={<Home />} />
+          <Route path="/playground/*" element={<Playground />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      );
+    } else if (role === "user") {
+      return (
+        <Routes>
+          <Route path="/home/:username" element={<Home />} />
+          <Route path="/spend" element={<Spend />} />
+          <Route path="/heatmap" element={<Heatmap />} />
+          <Route path="/playground/*" element={<Playground />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/recording" element={<Recording />} />
+          <Route path="/details/*" element={<Details />} />
+          <Route path="/jobs" element={<Jobs />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      );
+    }
+  };
+
+  return (
+    <Router>
+      <div className="flex flex-col gap-10 pt-14">
+        <Navbar />
+        <RoleRoutes />
+      </div>
     </Router>
   );
 }

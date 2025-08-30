@@ -1,35 +1,33 @@
 import { useState } from "react";
-import { login } from "../../../redux/authSlice";
+import { login, guestLogin } from "../../../redux/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import config from "../../config";
+import { useThrottle } from "@/lib/useThrottle";
 
 const Login = () => {
-  //   const URL = "3.89.31.205";
-  const prefix = "https://omnic.space/api/auth";
+  const prefix = config.prod.API_URL;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const emailInput = email || "czybaba@gmail.com";
-    const passwordInput = password || "password";
-    console.log(emailInput, passwordInput);
+  const handleLogin = async () => {
     try {
-      const response = await fetch(`${prefix}/login`, {
+      const response = await fetch(`${prefix}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: emailInput, password: passwordInput }),
+        body: JSON.stringify({ email: email, password: password }),
       });
       if (!response.ok) {
-        throw new Error("Login failed");
+        setError(true);
       }
 
       const data = await response.json();
-      console.log(data);
+
       dispatch(
         login({
           userId: data.user._id,
@@ -46,29 +44,61 @@ const Login = () => {
     }
   };
 
+  const handleGuestLogin = () => {
+    dispatch(guestLogin());
+    navigate(`/home/guest`);
+  };
+
+  const throttledLogin = useThrottle(handleLogin, 2000);
+
   return (
     <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-3 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-            bg-gray-300 p-2 rounded-lg w-96"
+      onSubmit={(e) => e.preventDefault()}
+      className="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+                 bg-white border border-black shadow-lg p-6 rounded-xl w-96"
     >
-      <label htmlFor="email">Email: </label>
+      <h2 className="text-2xl font-bold text-center text-black">Login</h2>
+
+      <label htmlFor="email" className="text-sm font-medium text-black">
+        Email
+      </label>
       <input
         type="text"
         id="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="bg-gray-200 rounded-lg"
+        className="w-full px-3 py-2 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black bg-white text-black"
       />
-      <label htmlFor="password">Password: </label>
+
+      <label htmlFor="password" className="text-sm font-medium text-black">
+        Password
+      </label>
       <input
         type="password"
         id="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="bg-gray-200 rounded-lg"
+        className="w-full px-3 py-2 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black bg-white text-black"
       />
-      <button type="submit">Login</button>
+
+      <button
+        type="button"
+        onClick={throttledLogin}
+        className="w-full py-2 mt-2 bg-black text-white rounded-lg font-semibold uppercase tracking-wide hover:bg-white hover:text-black hover:border hover:border-black transition-colors"
+      >
+        Login
+      </button>
+      {error && (
+        <p className="text-red-600 font-light">
+          Login Failed, check password or try Guest login
+        </p>
+      )}
+      <button
+        onClick={handleGuestLogin}
+        className="w-full py-2 mt-2 bg-white border border-black text-black rounded-lg font-semibold uppercase tracking-wide"
+      >
+        Guest
+      </button>
     </form>
   );
 };
