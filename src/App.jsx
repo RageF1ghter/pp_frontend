@@ -54,7 +54,7 @@ function App() {
 			return (
 				<Routes>
 					<Route path="/home/guest" element={<Home />} />
-					<Route path="/heatmap" element={<Playground />} />
+					<Route path="/heatmap" element={<Heatmap />} />
 					<Route path="*" element={<Home />} />
 				</Routes>
 			);
