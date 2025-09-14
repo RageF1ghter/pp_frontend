@@ -9,6 +9,7 @@ import Calendar from "./components/pages/workout/calendar";
 import Recording from "./components/pages/workout/recording";
 import Details from "./components/pages/workout/details";
 import Jobs from "./components/pages/jobs/jobs";
+import NotesPage from "./components/pages/notes/notesPage";
 
 import {
 	BrowserRouter as Router,
@@ -69,6 +70,7 @@ function App() {
 					<Route path="/recording" element={<Recording />} />
 					<Route path="/details/*" element={<Details />} />
 					<Route path="/jobs" element={<Jobs />} />
+					<Route path="/notes" element={<NotesPage />} />
 					<Route path="*" element={<Home />} />
 				</Routes>
 			);
