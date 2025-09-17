@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import useAxios from "@/lib/useAxios";
 import config from "../../config";
 
 export default function Jobs() {
@@ -27,7 +28,22 @@ export default function Jobs() {
 		interviewedJobs: 0,
 		rejectedJobs: 0,
 	});
-	const [added, setAdded] = useState(0);
+	const {
+		data: appsToday,
+		error,
+		loading,
+		run: reFetchAppsToday,
+	} = useAxios({
+		url: `${prefix}/getByDate?userId=${userId}&date=${
+			new Date().toLocaleDateString().split("T")[0]
+		}`,
+	});
+	const [appCount, setAppCount] = useState(appsToday || 0);
+	useEffect(() => {
+		if (typeof appsToday === "number") setAppCount(appsToday);
+	}, [appsToday]);
+
+	// console.log(new Date().toISOString().split("T")[0]);
 
 	// ====== CRUD (unchanged logic) ======
 	const handleAdd = async (e) => {
@@ -50,14 +66,7 @@ export default function Jobs() {
 				setDisplayRecords((prev) => [data.job, ...prev]);
 				setNewApp({ ...newApp, company: "" });
 				console.log("Application added successfully!");
-				setAdded((prev) => prev + 1);
-				localStorage.setItem(
-					"addedToday",
-					JSON.stringify({
-						date: new Date().toLocaleDateString(),
-						count: added + 1,
-					})
-				);
+				setAppCount(appCount + 1);
 			}
 		} catch (error) {
 			console.error("Error adding application:", error);
@@ -91,7 +100,7 @@ export default function Jobs() {
 			);
 			if (res.ok) {
 				const data = await res.json();
-				console.log("Fetched records:", data);
+				// console.log("Fetched records:", data);
 				setRecords(data);
 				setDisplayRecords(data);
 			}
@@ -110,6 +119,7 @@ export default function Jobs() {
 			if (res.ok) {
 				fetchSummary();
 				fetchRecords();
+				reFetchAppsToday();
 			}
 		} catch (error) {
 			console.error("Error deleting application:", error);
@@ -210,26 +220,7 @@ export default function Jobs() {
 		fetchRecords();
 	}, [page, limit, userId]);
 
-	useEffect(() => {
-		const date = new Date().toLocaleDateString();
-		const data = localStorage.getItem("addedToday");
-		if (!data) {
-			localStorage.setItem(
-				"addedToday",
-				JSON.stringify({ date, count: added })
-			);
-		} else {
-			const parsedData = JSON.parse(data);
-			if (parsedData.date === date) {
-				setAdded(parsedData.count);
-			} else {
-				localStorage.setItem(
-					"addedToday",
-					JSON.stringify({ date, count: added })
-				);
-			}
-		}
-	}, []);
+	useEffect(() => {}, []);
 
 	let lastDate = new Date().toLocaleDateString();
 	let toggleColor = false;
@@ -307,7 +298,13 @@ export default function Jobs() {
 							</div>
 
 							<div className="">
-								<p className="text-xl">{added} Jobs have applied.</p>
+								{loading ? (
+									<p className="text-xl">Loading...</p>
+								) : error ? (
+									<p className="text-xl">Error!</p>
+								) : (
+									<p className="text-xl">{appCount} Jobs have applied.</p>
+								)}
 							</div>
 
 							<button

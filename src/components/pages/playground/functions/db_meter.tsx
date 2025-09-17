@@ -26,7 +26,7 @@ export default function VoiceLevelMeter({
 	smoothing = 0.85, // 0..1 (higher = smoother)
 	fftSize = 2048, // analyser buffer size; power of 2
 	peakHoldMs = 1200,
-	className = "",
+
 	onLevel,
 }: {
 	autoStart?: boolean;
@@ -209,80 +209,78 @@ export default function VoiceLevelMeter({
 	}, [normalize]);
 
 	return (
-		<>
-			<div className={`h-full max-w-xl select-none px-20 py-10 ${className}`}>
-				<div className="flex items-center justify-between mb-2">
-					<div className="text-sm text-gray-500">Mic level (dBFS)</div>
-					<div className="text-sm tabular-nums">
-						{dbDisplay.toFixed(1)} dB
-						<span className="text-gray-400">
-							{" "}
-							(peak {peakDbRef.current.toFixed(1)} dB)
-						</span>
-					</div>
-				</div>
-
-				<div className="flex items-start gap-3">
-					{/* Vertical meter track */}
-					<div className="relative h-64 w-6 bg-gray-200 overflow-hidden shadow-inner rounded">
-						{/* Live level fill: bottom -> top */}
-						<div
-							className="absolute left-0 bottom-0 w-full bg-green-400"
-							style={{ height: `${levelPct}%` }}
-						/>
-
-						{/* Peak marker: thin horizontal line */}
-						<div
-							className="absolute left-0 w-full h-0.5 bg-red-500"
-							style={{ bottom: `${peakPct}%` }}
-						/>
-
-						{/* Reference ticks: thin horizontal lines */}
-						{marks.map((m, i) => (
-							<div
-								key={i}
-								className="absolute left-0 w-full h-px bg-gray-300"
-								style={{ bottom: `${m.pct}%` }}
-							/>
-						))}
-					</div>
-
-					<div className="relative h-64 flex-1">
-						{marks.map((m, i) => (
-							<div
-								key={i}
-								className="absolute left-0 -translate-y-1/2 text-xs text-gray-500"
-								style={{ top: `${100 - m.pct}%` }}
-							>
-								{m.label} ({m.dbfs} dB)
-							</div>
-						))}
-					</div>
-				</div>
-
-				<div className="mt-3 flex gap-2">
-					{!running ? (
-						<button
-							onClick={start}
-							className="px-3 py-1.5 rounded-xl bg-black text-white shadow hover:opacity-90"
-						>
-							Start
-						</button>
-					) : (
-						<button
-							onClick={stop}
-							className="px-3 py-1.5 rounded-xl bg-gray-100 text-gray-900 shadow hover:bg-gray-200"
-						>
-							Stop
-						</button>
-					)}
-					<span className="text-xs text-gray-500 self-center">
-						Range: {minDb} to {maxDb} dBFS
+		<div className={`h-full max-w-xl select-none px-20 py-10`}>
+			<div className="flex items-center justify-between mb-2">
+				<div className="text-sm text-gray-500">Mic level (dBFS)</div>
+				<div className="text-sm tabular-nums">
+					{dbDisplay.toFixed(0)} dB
+					<span className="text-gray-400">
+						{" "}
+						(peak {peakDbRef.current.toFixed(1)} dB)
 					</span>
 				</div>
-
-				{error && <div className="mt-3 text-xs text-red-600">{error}</div>}
 			</div>
-		</>
+
+			<div className="flex items-start gap-3">
+				{/* Vertical meter track */}
+				<div className="relative h-64 w-6 bg-gray-200 overflow-hidden shadow-inner rounded">
+					{/* Live level fill: bottom -> top */}
+					<div
+						className="absolute left-0 bottom-0 w-full bg-green-400"
+						style={{ height: `${levelPct}%` }}
+					/>
+
+					{/* Peak marker: thin horizontal line */}
+					<div
+						className="absolute left-0 w-full h-0.5 bg-red-500"
+						style={{ bottom: `${peakPct}%` }}
+					/>
+
+					{/* Reference ticks: thin horizontal lines */}
+					{marks.map((m, i) => (
+						<div
+							key={i}
+							className="absolute left-0 w-full h-px bg-gray-300"
+							style={{ bottom: `${m.pct}%` }}
+						/>
+					))}
+				</div>
+
+				<div className="relative h-64 flex-1">
+					{marks.map((m, i) => (
+						<div
+							key={i}
+							className="absolute left-0 -translate-y-1/2 text-xs text-gray-500"
+							style={{ top: `${100 - m.pct}%` }}
+						>
+							{m.label} ({m.dbfs} dB)
+						</div>
+					))}
+				</div>
+			</div>
+
+			<div className="mt-3 flex gap-2">
+				{!running ? (
+					<button
+						onClick={start}
+						className="px-3 py-1.5 rounded-xl bg-black text-white shadow hover:opacity-90"
+					>
+						Start
+					</button>
+				) : (
+					<button
+						onClick={stop}
+						className="px-3 py-1.5 rounded-xl bg-gray-100 text-gray-900 shadow hover:bg-gray-200"
+					>
+						Stop
+					</button>
+				)}
+				<span className="text-xs text-gray-500 self-center">
+					Range: {minDb} to {maxDb} dBFS
+				</span>
+			</div>
+
+			{error && <div className="mt-3 text-xs text-red-600">{error}</div>}
+		</div>
 	);
 }
